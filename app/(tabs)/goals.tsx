@@ -2,9 +2,9 @@ import { useState } from 'react';
 import { View, Text, Pressable, StyleSheet, FlatList } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { Plus } from 'lucide-react-native';
-import { useTheme } from '../../src/theme';
-import { LONG_GOALS } from '../../src/data';
+import { Plus, Target } from 'lucide-react-native';
+import { useTheme, SPACING, FONT_SIZE, FONT_WEIGHT, INTERACTIVE } from '../../src/theme';
+import { LONG_GOALS_INIT } from '../../src/data';
 import {
   ScreenHeader,
   LongGoalCard,
@@ -23,7 +23,7 @@ export default function GoalsScreen() {
       <ScreenHeader title="Goals" subtitle="Long-term objectives" />
 
       <FlatList
-        data={LONG_GOALS}
+        data={LONG_GOALS_INIT}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
           <LongGoalCard
@@ -31,9 +31,17 @@ export default function GoalsScreen() {
             onPress={() => router.push(`/goal/${item.id}`)}
           />
         )}
+        ListEmptyComponent={
+          <View style={styles.emptyState}>
+            <Target size={32} color={theme.textTertiary} />
+            <Text style={[styles.emptyText, { color: theme.textTertiary }]}>
+              No long-term goals yet
+            </Text>
+          </View>
+        }
         ListFooterComponent={
           <Pressable
-            style={({ pressed }) => ({ opacity: pressed ? 0.7 : 1 })}
+            style={({ pressed }) => ({ opacity: pressed ? INTERACTIVE.pressedOpacity : 1 })}
             onPress={() => {}}
           >
             <GlassCard style={styles.addButton} subtle>
@@ -58,19 +66,27 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   content: {
-    paddingHorizontal: 20,
-    paddingTop: 16,
+    paddingHorizontal: SPACING.xl,
+    paddingTop: SPACING.lg,
     paddingBottom: 100,
   },
+  emptyState: {
+    alignItems: 'center',
+    paddingVertical: SPACING.xxxl,
+    gap: SPACING.sm,
+  },
+  emptyText: {
+    fontSize: FONT_SIZE.lg,
+  },
   addButton: {
-    padding: 20,
+    padding: SPACING.xl,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 8,
+    gap: SPACING.sm,
   },
   addText: {
-    fontSize: 14,
-    fontWeight: '500',
+    fontSize: FONT_SIZE.lg,
+    fontWeight: FONT_WEIGHT.medium,
   },
 });

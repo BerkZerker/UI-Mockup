@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet } from 'react-native';
 import { Plus } from 'lucide-react-native';
-import { useTheme } from '../theme';
+import { useTheme, SPACING, RADIUS, INTERACTIVE } from '../theme';
 
 interface FABProps {
   onPress: () => void;
@@ -12,11 +12,13 @@ export function FAB({ onPress }: FABProps) {
   return (
     <Pressable
       onPress={onPress}
+      accessibilityLabel="Add new item"
+      accessibilityRole="button"
       style={({ pressed }) => [
         styles.fab,
         {
           backgroundColor: accent.primary,
-          opacity: pressed ? 0.8 : 1,
+          opacity: pressed ? INTERACTIVE.pressedOpacityLight : 1,
         },
       ]}
     >
@@ -29,10 +31,10 @@ const styles = StyleSheet.create({
   fab: {
     position: 'absolute',
     bottom: 96,
-    right: 20,
+    right: SPACING.xl,
     width: 56,
     height: 56,
-    borderRadius: 16,
+    borderRadius: RADIUS['2xl'],
     alignItems: 'center',
     justifyContent: 'center',
     shadowColor: '#000',

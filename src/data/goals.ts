@@ -4,7 +4,7 @@ export const GOALS_INIT: Goal[] = [
   {
     id: 1,
     title: 'Read 20 pages',
-    cat: 'Learning',
+    category: 'Learning',
     done: true,
     streak: 12,
     today: true,
@@ -12,7 +12,7 @@ export const GOALS_INIT: Goal[] = [
   {
     id: 2,
     title: 'Morning meditation -- 10 min',
-    cat: 'Wellness',
+    category: 'Wellness',
     done: true,
     streak: 5,
     today: true,
@@ -20,7 +20,7 @@ export const GOALS_INIT: Goal[] = [
   {
     id: 3,
     title: 'Write 500 words',
-    cat: 'Creative',
+    category: 'Creative',
     done: false,
     streak: 8,
     today: true,
@@ -28,7 +28,7 @@ export const GOALS_INIT: Goal[] = [
   {
     id: 4,
     title: '30 min walk outside',
-    cat: 'Fitness',
+    category: 'Fitness',
     done: false,
     streak: 3,
     today: true,
@@ -36,7 +36,7 @@ export const GOALS_INIT: Goal[] = [
   {
     id: 5,
     title: 'Review budget spreadsheet',
-    cat: 'Finance',
+    category: 'Finance',
     done: false,
     streak: 0,
     today: true,
@@ -44,7 +44,7 @@ export const GOALS_INIT: Goal[] = [
   {
     id: 6,
     title: 'Practice guitar scales',
-    cat: 'Creative',
+    category: 'Creative',
     done: false,
     streak: 15,
     today: false,
@@ -52,18 +52,18 @@ export const GOALS_INIT: Goal[] = [
   {
     id: 7,
     title: 'Drink 8 glasses of water',
-    cat: 'Wellness',
+    category: 'Wellness',
     done: false,
     streak: 22,
     today: true,
   },
 ];
 
-export const LONG_GOALS: LongGoal[] = [
+export const LONG_GOALS_INIT: LongGoal[] = [
   {
     id: 1,
     title: 'Run a half marathon',
-    pct: 65,
+    percent: 65,
     target: '13.1 mi',
     current: '8.5 mi',
     deadline: 'Mar 15',
@@ -71,7 +71,7 @@ export const LONG_GOALS: LongGoal[] = [
   {
     id: 2,
     title: 'Read 24 books this year',
-    pct: 25,
+    percent: 25,
     target: '24 books',
     current: '6 books',
     deadline: 'Dec 31',
@@ -79,7 +79,7 @@ export const LONG_GOALS: LongGoal[] = [
   {
     id: 3,
     title: 'Save $5,000',
-    pct: 42,
+    percent: 42,
     target: '$5,000',
     current: '$2,100',
     deadline: 'Jun 30',
@@ -87,7 +87,7 @@ export const LONG_GOALS: LongGoal[] = [
   {
     id: 4,
     title: 'Learn conversational Spanish',
-    pct: 18,
+    percent: 18,
     target: 'B1 level',
     current: 'A2 level',
     deadline: 'Sep 1',

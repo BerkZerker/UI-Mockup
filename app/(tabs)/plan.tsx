@@ -1,6 +1,7 @@
-import { View, StyleSheet, FlatList } from 'react-native';
+import { View, Text, StyleSheet, FlatList } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useTheme } from '../../src/theme';
+import { Calendar } from 'lucide-react-native';
+import { useTheme, SPACING, FONT_SIZE } from '../../src/theme';
 import { PLAN } from '../../src/data';
 import {
   ScreenHeader,
@@ -29,6 +30,14 @@ export default function PlanScreen() {
         renderItem={({ item, index }) => (
           <DayCard day={item} isToday={index === 0} />
         )}
+        ListEmptyComponent={
+          <View style={styles.emptyState}>
+            <Calendar size={32} color={theme.textTertiary} />
+            <Text style={[styles.emptyText, { color: theme.textTertiary }]}>
+              No planned days
+            </Text>
+          </View>
+        }
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
       />
@@ -41,15 +50,23 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   weekContainer: {
-    paddingHorizontal: 20,
-    marginTop: 16,
-    marginBottom: 20,
+    paddingHorizontal: SPACING.xl,
+    marginTop: SPACING.lg,
+    marginBottom: SPACING.xl,
   },
   weekCard: {
     padding: 0,
   },
   content: {
-    paddingHorizontal: 20,
+    paddingHorizontal: SPACING.xl,
     paddingBottom: 100,
+  },
+  emptyState: {
+    alignItems: 'center',
+    paddingVertical: SPACING.xxxl,
+    gap: SPACING.sm,
+  },
+  emptyText: {
+    fontSize: FONT_SIZE.lg,
   },
 });

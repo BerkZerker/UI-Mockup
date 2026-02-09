@@ -41,7 +41,7 @@ export function DotPattern() {
   }
 
   return (
-    <View style={styles.container} pointerEvents="none">
+    <View style={styles.container} pointerEvents="none" importantForAccessibility="no">
       <Svg width={width} height={height} style={styles.svg}>
         <Defs>
           <Pattern

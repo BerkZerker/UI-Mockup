@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet } from 'react-native';
-import { useTheme } from '../theme';
-import { WKDAYS } from '../data';
+import { useTheme, SPACING, FONT_SIZE, FONT_WEIGHT, RADIUS } from '../theme';
+import { WEEKDAYS } from '../data';
 
 interface WeekStripProps {
   days: string[];
@@ -17,7 +17,7 @@ export function WeekStrip({ days, selectedDay = '7' }: WeekStripProps) {
         return (
           <View key={day} style={styles.dayContainer}>
             <Text style={[styles.dayLabel, { color: theme.textTertiary }]}>
-              {WKDAYS[index]}
+              {WEEKDAYS[index]}
             </Text>
             <View
               style={[
@@ -32,7 +32,7 @@ export function WeekStrip({ days, selectedDay = '7' }: WeekStripProps) {
                   styles.dayNumber,
                   {
                     color: isToday ? '#fff' : theme.text,
-                    fontWeight: isToday ? '700' : '400',
+                    fontWeight: isToday ? FONT_WEIGHT.bold : FONT_WEIGHT.regular,
                   },
                 ]}
               >
@@ -50,26 +50,26 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingVertical: 14,
-    paddingHorizontal: 8,
+    paddingVertical: SPACING.lg - 2,
+    paddingHorizontal: SPACING.sm,
   },
   dayContainer: {
     alignItems: 'center',
-    gap: 6,
+    gap: SPACING.sm - 2,
     width: 36,
   },
   dayLabel: {
-    fontSize: 11,
-    fontWeight: '500',
+    fontSize: FONT_SIZE.sm,
+    fontWeight: FONT_WEIGHT.medium,
   },
   dayCircle: {
-    width: 32,
-    height: 32,
-    borderRadius: 10,
+    width: SPACING.xxxl,
+    height: SPACING.xxxl,
+    borderRadius: RADIUS.md,
     alignItems: 'center',
     justifyContent: 'center',
   },
   dayNumber: {
-    fontSize: 14,
+    fontSize: FONT_SIZE.lg,
   },
 });

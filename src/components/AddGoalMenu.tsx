@@ -1,6 +1,6 @@
 import { View, Text, Modal, Pressable, StyleSheet, TouchableWithoutFeedback } from 'react-native';
 import { Target, Hash, Plus, X } from 'lucide-react-native';
-import { useTheme } from '../theme';
+import { useTheme, SPACING, FONT_SIZE, FONT_WEIGHT, RADIUS, INTERACTIVE } from '../theme';
 
 interface AddGoalMenuProps {
   visible: boolean;
@@ -55,9 +55,11 @@ export function AddGoalMenu({ visible, onClose }: AddGoalMenuProps) {
                   </View>
                   <Pressable
                     onPress={onClose}
+                    accessibilityLabel="Close menu"
+                    accessibilityRole="button"
                     style={({ pressed }) => [
                       styles.closeButton,
-                      { opacity: pressed ? 0.6 : 1 },
+                      { opacity: pressed ? INTERACTIVE.pressedOpacityHeavy : 1 },
                     ]}
                   >
                     <X size={20} color={theme.textSecondary} />
@@ -69,10 +71,11 @@ export function AddGoalMenu({ visible, onClose }: AddGoalMenuProps) {
                   {menuItems.map((item, index) => (
                     <Pressable
                       key={index}
+                      accessibilityRole="button"
                       style={({ pressed }) => [
                         styles.menuItem,
                         {
-                          opacity: pressed ? 0.7 : 1,
+                          opacity: pressed ? INTERACTIVE.pressedOpacity : 1,
                           borderBottomWidth: index < menuItems.length - 1 ? 1 : 0,
                           borderBottomColor: theme.borderSubtle,
                         },
@@ -108,7 +111,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
+    padding: SPACING.xl,
   },
   menuContainer: {
     width: '100%',
@@ -117,53 +120,53 @@ const styles = StyleSheet.create({
   menu: {
     padding: 0,
     overflow: 'hidden',
-    borderRadius: 20,
+    borderRadius: RADIUS['3xl'],
     borderWidth: 1,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 10 },
     shadowOpacity: 0.3,
-    shadowRadius: 20,
+    shadowRadius: SPACING.xl,
     elevation: 10,
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: 16,
-    paddingBottom: 12,
+    padding: SPACING.lg,
+    paddingBottom: SPACING.md,
   },
   headerLeft: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
+    gap: SPACING.md,
   },
   headerIcon: {
     width: 36,
     height: 36,
-    borderRadius: 10,
+    borderRadius: RADIUS.md,
     alignItems: 'center',
     justifyContent: 'center',
   },
   headerTitle: {
-    fontSize: 18,
-    fontWeight: '700',
+    fontSize: FONT_SIZE['4xl'],
+    fontWeight: FONT_WEIGHT.bold,
   },
   closeButton: {
-    padding: 4,
+    padding: SPACING.xs,
   },
   items: {
-    paddingTop: 4,
+    paddingTop: SPACING.xs,
   },
   menuItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 16,
-    gap: 14,
+    padding: SPACING.lg,
+    gap: SPACING.lg - 2,
   },
   iconContainer: {
     width: 44,
     height: 44,
-    borderRadius: 12,
+    borderRadius: RADIUS.lg,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -171,11 +174,11 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   itemLabel: {
-    fontSize: 15,
-    fontWeight: '600',
-    marginBottom: 2,
+    fontSize: FONT_SIZE.xl,
+    fontWeight: FONT_WEIGHT.semibold,
+    marginBottom: SPACING.xxs,
   },
   itemDescription: {
-    fontSize: 13,
+    fontSize: FONT_SIZE.base,
   },
 });

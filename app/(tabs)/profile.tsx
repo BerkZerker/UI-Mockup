@@ -1,6 +1,6 @@
 import { View, Text, TextInput, Pressable, ScrollView, StyleSheet, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useTheme } from '../../src/theme';
+import { useTheme, SPACING, FONT_SIZE, FONT_WEIGHT, RADIUS, INTERACTIVE } from '../../src/theme';
 import { useAppState } from '../../src/state/AppStateContext';
 import { ScreenHeader, StatsSummaryCard, GlassCard } from '../../src/components';
 
@@ -82,11 +82,13 @@ export default function ProfileScreen() {
         {/* Reset Button */}
         <Pressable
           onPress={handleReset}
+          accessibilityLabel="Reset all data"
+          accessibilityRole="button"
           style={({ pressed }) => [
             styles.resetButton,
             {
               backgroundColor: theme.danger,
-              opacity: pressed ? 0.8 : 1,
+              opacity: pressed ? INTERACTIVE.pressedOpacityLight : 1,
             },
           ]}
         >
@@ -102,50 +104,50 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   content: {
-    paddingHorizontal: 20,
-    paddingTop: 32,
+    paddingHorizontal: SPACING.xl,
+    paddingTop: SPACING.xxxl,
     paddingBottom: 100,
   },
   avatarContainer: {
     alignItems: 'center',
-    marginBottom: 24,
+    marginBottom: SPACING.xxl,
   },
   avatar: {
     width: 80,
     height: 80,
-    borderRadius: 40,
+    borderRadius: RADIUS.full,
     alignItems: 'center',
     justifyContent: 'center',
   },
   initials: {
-    fontSize: 28,
-    fontWeight: '700',
+    fontSize: FONT_SIZE['6xl'],
+    fontWeight: FONT_WEIGHT.bold,
     color: '#fff',
   },
   nameCard: {
-    padding: 16,
-    marginBottom: 8,
+    padding: SPACING.lg,
+    marginBottom: SPACING.sm,
   },
   nameLabel: {
-    fontSize: 12,
-    fontWeight: '600',
-    marginBottom: 8,
+    fontSize: FONT_SIZE.md,
+    fontWeight: FONT_WEIGHT.semibold,
+    marginBottom: SPACING.sm,
   },
   nameInput: {
-    fontSize: 16,
-    fontWeight: '500',
-    paddingVertical: 8,
+    fontSize: FONT_SIZE['2xl'],
+    fontWeight: FONT_WEIGHT.medium,
+    paddingVertical: SPACING.sm,
     borderBottomWidth: 1,
   },
   resetButton: {
-    marginTop: 32,
-    padding: 16,
-    borderRadius: 12,
+    marginTop: SPACING.xxxl,
+    padding: SPACING.lg,
+    borderRadius: RADIUS.lg,
     alignItems: 'center',
   },
   resetButtonText: {
-    fontSize: 15,
-    fontWeight: '600',
+    fontSize: FONT_SIZE.xl,
+    fontWeight: FONT_WEIGHT.semibold,
     color: '#fff',
   },
 });

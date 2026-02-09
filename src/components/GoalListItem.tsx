@@ -1,6 +1,6 @@
 import { View, Text, Pressable, StyleSheet } from 'react-native';
 import { ChevronRight, Flame, Check } from 'lucide-react-native';
-import { useTheme } from '../theme';
+import { useTheme, SPACING, FONT_SIZE, FONT_WEIGHT, RADIUS, INTERACTIVE } from '../theme';
 import { Goal } from '../types';
 
 interface GoalListItemProps {
@@ -16,17 +16,21 @@ export function GoalListItem({ goal, onToggle, onPress, showBorder = true }: Goa
   return (
     <Pressable
       onPress={() => onPress?.(goal.id)}
+      accessibilityRole="button"
       style={({ pressed }) => [
         styles.container,
         {
           borderBottomWidth: showBorder ? 1 : 0,
           borderBottomColor: theme.borderSubtle,
-          opacity: pressed ? 0.7 : 1,
+          opacity: pressed ? INTERACTIVE.pressedOpacity : 1,
         },
       ]}
     >
       <Pressable
         onPress={() => onToggle(goal.id)}
+        accessibilityRole="checkbox"
+        accessibilityState={{ checked: goal.done }}
+        accessibilityLabel={`Mark ${goal.title} as ${goal.done ? 'not done' : 'done'}`}
         style={[
           styles.checkbox,
           {
@@ -54,7 +58,7 @@ export function GoalListItem({ goal, onToggle, onPress, showBorder = true }: Goa
         <View style={styles.meta}>
           <View style={[styles.tag, { backgroundColor: theme.pillBg }]}>
             <Text style={[styles.tagText, { color: theme.textTertiary }]}>
-              {goal.cat}
+              {goal.category}
             </Text>
           </View>
           {goal.streak > 0 && (
@@ -77,8 +81,8 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    gap: 12,
-    paddingVertical: 14,
+    gap: SPACING.md,
+    paddingVertical: SPACING.lg - 2,
   },
   checkbox: {
     width: 22,
@@ -93,33 +97,33 @@ const styles = StyleSheet.create({
     minWidth: 0,
   },
   title: {
-    fontSize: 15,
-    fontWeight: '400',
+    fontSize: FONT_SIZE.xl,
+    fontWeight: FONT_WEIGHT.regular,
     lineHeight: 21,
   },
   meta: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
+    gap: SPACING.md - 2,
     marginTop: 5,
   },
   tag: {
-    paddingVertical: 2,
-    paddingHorizontal: 8,
-    borderRadius: 6,
+    paddingVertical: SPACING.xxs,
+    paddingHorizontal: SPACING.sm,
+    borderRadius: RADIUS.sm,
   },
   tagText: {
-    fontSize: 11,
+    fontSize: FONT_SIZE.sm,
   },
   streak: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 3,
+    gap: SPACING.xs - 1,
   },
   streakText: {
-    fontSize: 11,
+    fontSize: FONT_SIZE.sm,
   },
   chevron: {
-    marginTop: 4,
+    marginTop: SPACING.xs,
   },
 });

@@ -1,6 +1,6 @@
 import { View, ViewStyle, Platform, StyleSheet } from 'react-native';
 import { BlurView } from 'expo-blur';
-import { useTheme } from '../theme';
+import { useTheme, RADIUS } from '../theme';
 import { ReactNode } from 'react';
 
 interface GlassCardProps {
@@ -22,7 +22,7 @@ export function GlassCard({ children, style, intensity = 40, subtle = false }: G
           {
             borderWidth: 1,
             borderColor: theme.glassBorder,
-            borderRadius: subtle ? 16 : 20,
+            borderRadius: subtle ? RADIUS['2xl'] : RADIUS['3xl'],
             overflow: 'hidden',
           },
           style,
@@ -41,7 +41,7 @@ export function GlassCard({ children, style, intensity = 40, subtle = false }: G
           backgroundColor: theme.glassBg,
           borderWidth: 1,
           borderColor: theme.glassBorder,
-          borderRadius: subtle ? 16 : 20,
+          borderRadius: subtle ? RADIUS['2xl'] : RADIUS['3xl'],
         },
         style,
       ]}

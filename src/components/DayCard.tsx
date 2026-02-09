@@ -1,6 +1,6 @@
 import { View, Text, Pressable, StyleSheet } from 'react-native';
 import { ChevronRight } from 'lucide-react-native';
-import { useTheme } from '../theme';
+import { useTheme, SPACING, FONT_SIZE, FONT_WEIGHT, INTERACTIVE } from '../theme';
 import { PlanDay } from '../types';
 import { ProgressBar } from './ProgressBar';
 import { GlassCard } from './GlassCard';
@@ -15,7 +15,7 @@ export function DayCard({ day, isToday = false, onPress }: DayCardProps) {
   const { theme, accent } = useTheme();
 
   return (
-    <Pressable onPress={onPress} style={({ pressed }) => ({ opacity: pressed ? 0.7 : 1 })}>
+    <Pressable onPress={onPress} accessibilityLabel={`${day.day}, ${day.date}`} accessibilityRole="button" style={({ pressed }) => ({ opacity: pressed ? INTERACTIVE.pressedOpacity : 1 })}>
       <GlassCard style={styles.card} subtle={!isToday}>
         <View style={styles.header}>
           <View>
@@ -47,8 +47,8 @@ export function DayCard({ day, isToday = false, onPress }: DayCardProps) {
 
 const styles = StyleSheet.create({
   card: {
-    padding: 16,
-    marginBottom: 10,
+    padding: SPACING.lg,
+    marginBottom: SPACING.md - 2,
   },
   header: {
     flexDirection: 'row',
@@ -56,26 +56,26 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   dayName: {
-    fontSize: 15,
-    fontWeight: '600',
+    fontSize: FONT_SIZE.xl,
+    fontWeight: FONT_WEIGHT.semibold,
   },
   date: {
-    fontSize: 12,
-    marginTop: 2,
+    fontSize: FONT_SIZE.md,
+    marginTop: SPACING.xxs,
   },
   right: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
+    gap: SPACING.sm - 2,
   },
   progress: {
-    fontSize: 12,
-    fontWeight: '600',
+    fontSize: FONT_SIZE.md,
+    fontWeight: FONT_WEIGHT.semibold,
   },
   tasks: {
-    fontSize: 12,
+    fontSize: FONT_SIZE.md,
   },
   progressBar: {
-    marginTop: 10,
+    marginTop: SPACING.md - 2,
   },
 });

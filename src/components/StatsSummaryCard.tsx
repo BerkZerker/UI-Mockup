@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet } from 'react-native';
-import { useTheme } from '../theme';
+import { useTheme, SPACING, FONT_SIZE, FONT_WEIGHT } from '../theme';
 import { GlassCard } from './GlassCard';
 
 interface Stat {
@@ -34,27 +34,27 @@ export function StatsSummaryCard({ title, stats }: StatsSummaryCardProps) {
 
 const styles = StyleSheet.create({
   card: {
-    padding: 18,
-    marginTop: 24,
+    padding: SPACING.xl - 2,
+    marginTop: SPACING.xxl,
   },
   title: {
-    fontSize: 14,
-    fontWeight: '600',
+    fontSize: FONT_SIZE.lg,
+    fontWeight: FONT_WEIGHT.semibold,
   },
   stats: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 14,
+    marginTop: SPACING.lg - 2,
   },
   stat: {
     alignItems: 'center',
   },
   value: {
-    fontSize: 22,
-    fontWeight: '700',
+    fontSize: FONT_SIZE['5xl'],
+    fontWeight: FONT_WEIGHT.bold,
   },
   label: {
-    fontSize: 11,
-    marginTop: 4,
+    fontSize: FONT_SIZE.sm,
+    marginTop: SPACING.xs,
   },
 });

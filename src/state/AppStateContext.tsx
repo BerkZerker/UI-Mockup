@@ -1,15 +1,15 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { Goal, Habit } from '../types';
+import { Goal, Habit, CategoryFilter, WeekDay } from '../types';
 import { GOALS_INIT, HABITS_INIT } from '../data';
 
 interface AppStateContextValue {
   goals: Goal[];
   habits: Habit[];
-  categoryFilter: string;
+  categoryFilter: CategoryFilter;
   userName: string;
   toggleGoal: (id: number) => void;
   toggleHabitDay: (habitId: number, dayIndex: number) => void;
-  setCategoryFilter: (cat: string) => void;
+  setCategoryFilter: (cat: CategoryFilter) => void;
   setUserName: (name: string) => void;
   resetAll: () => void;
 }
@@ -23,7 +23,7 @@ interface AppStateProviderProps {
 export function AppStateProvider({ children }: AppStateProviderProps) {
   const [goals, setGoals] = useState<Goal[]>(GOALS_INIT);
   const [habits, setHabits] = useState<Habit[]>(HABITS_INIT);
-  const [categoryFilter, setCategoryFilter] = useState('All');
+  const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>('All');
   const [userName, setUserName] = useState('Sam');
 
   const toggleGoal = (id: number) => {
@@ -38,7 +38,7 @@ export function AppStateProvider({ children }: AppStateProviderProps) {
         h.id === habitId
           ? {
               ...h,
-              week: h.week.map((v, i) => (i === dayIndex ? (v ? 0 : 1) : v)),
+              week: h.week.map((v, i) => (i === dayIndex ? (v ? 0 : 1) : v)) as WeekDay[],
             }
           : h
       )

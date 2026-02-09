@@ -1,7 +1,12 @@
+export type Category = 'Wellness' | 'Learning' | 'Creative' | 'Fitness' | 'Finance';
+export type CategoryFilter = Category | 'All';
+export type Frequency = 'Daily' | '3x/week' | '2x/week' | 'Weekly';
+export type WeekDay = 0 | 1;
+
 export interface Goal {
   id: number;
   title: string;
-  cat: string;
+  category: Category;
   done: boolean;
   streak: number;
   today: boolean;
@@ -10,15 +15,15 @@ export interface Goal {
 export interface Habit {
   id: number;
   title: string;
-  freq: string;
+  frequency: Frequency;
   streak: number;
-  week: number[];
+  week: WeekDay[];
 }
 
 export interface LongGoal {
   id: number;
   title: string;
-  pct: number;
+  percent: number;
   target: string;
   current: string;
   deadline: string;

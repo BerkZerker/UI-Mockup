@@ -1,8 +1,7 @@
 import { View, Text, Pressable, StyleSheet } from 'react-native';
 import { Repeat, Flame, Check } from 'lucide-react-native';
-import { useTheme } from '../theme';
+import { useTheme, SPACING, FONT_SIZE, FONT_WEIGHT, RADIUS } from '../theme';
 import { Habit } from '../types';
-import { WKDAYS } from '../data';
 
 interface HabitRowProps {
   habit: Habit;
@@ -29,7 +28,7 @@ export function HabitRow({ habit, onToggleDay, showBorder = true }: HabitRowProp
           <View style={styles.freq}>
             <Repeat size={10} color={theme.textTertiary} />
             <Text style={[styles.metaText, { color: theme.textTertiary }]}>
-              {habit.freq}
+              {habit.frequency}
             </Text>
           </View>
           {habit.streak > 0 && (
@@ -48,6 +47,9 @@ export function HabitRow({ habit, onToggleDay, showBorder = true }: HabitRowProp
           <Pressable
             key={index}
             onPress={() => onToggleDay(habit.id, index)}
+            accessibilityRole="checkbox"
+            accessibilityState={{ checked: !!done }}
+            accessibilityLabel={`Day ${index + 1} ${done ? 'completed' : 'not completed'}`}
             style={styles.dayButton}
           >
             <View
@@ -73,34 +75,34 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 14,
+    paddingVertical: SPACING.lg - 2,
   },
   info: {
     flex: 1,
     minWidth: 0,
   },
   title: {
-    fontSize: 15,
-    fontWeight: '500',
+    fontSize: FONT_SIZE.xl,
+    fontWeight: FONT_WEIGHT.medium,
   },
   meta: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
-    marginTop: 4,
+    gap: SPACING.sm,
+    marginTop: SPACING.xs,
   },
   freq: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 3,
+    gap: SPACING.xs - 1,
   },
   streak: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 3,
+    gap: SPACING.xs - 1,
   },
   metaText: {
-    fontSize: 11,
+    fontSize: FONT_SIZE.sm,
   },
   week: {
     flexDirection: 'row',
@@ -113,8 +115,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   dayBox: {
-    width: 20,
-    height: 20,
+    width: SPACING.xl,
+    height: SPACING.xl,
     borderRadius: 7,
     alignItems: 'center',
     justifyContent: 'center',

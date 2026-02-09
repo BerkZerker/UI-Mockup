@@ -1,9 +1,9 @@
 import { View, Text, StyleSheet, Pressable } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { ArrowLeft, Clock } from 'lucide-react-native';
-import { useTheme } from '../../src/theme';
-import { LONG_GOALS } from '../../src/data';
+import { ArrowLeft, Clock, AlertCircle } from 'lucide-react-native';
+import { useTheme, SPACING, FONT_SIZE, FONT_WEIGHT, RADIUS, INTERACTIVE } from '../../src/theme';
+import { LONG_GOALS_INIT } from '../../src/data';
 import { GlassCard } from '../../src/components';
 
 export default function GoalDetailScreen() {
@@ -11,12 +11,48 @@ export default function GoalDetailScreen() {
   const { id } = useLocalSearchParams();
   const router = useRouter();
 
-  const goal = LONG_GOALS.find((g) => g.id === Number(id));
+  const goal = LONG_GOALS_INIT.find((g) => g.id === Number(id));
 
   if (!goal) {
     return (
       <SafeAreaView style={[styles.container, { backgroundColor: theme.bg }]}>
-        <Text style={{ color: theme.text }}>Goal not found</Text>
+        <View style={styles.header}>
+          <Pressable
+            onPress={() => router.back()}
+            accessibilityLabel="Go back"
+            accessibilityRole="button"
+            style={({ pressed }) => [
+              styles.backButton,
+              { opacity: pressed ? INTERACTIVE.pressedOpacity : 1 },
+            ]}
+          >
+            <ArrowLeft size={24} color={theme.text} />
+          </Pressable>
+          <Text style={[styles.headerTitle, { color: theme.text }]}>Goal Details</Text>
+          <View style={styles.placeholder} />
+        </View>
+        <View style={styles.errorContainer}>
+          <GlassCard style={styles.errorCard}>
+            <AlertCircle size={40} color={theme.textTertiary} />
+            <Text style={[styles.errorTitle, { color: theme.text }]}>Goal not found</Text>
+            <Text style={[styles.errorDescription, { color: theme.textTertiary }]}>
+              This goal may have been removed or doesn't exist.
+            </Text>
+            <Pressable
+              onPress={() => router.back()}
+              accessibilityRole="button"
+              style={({ pressed }) => [
+                styles.errorButton,
+                {
+                  backgroundColor: accent.primary,
+                  opacity: pressed ? INTERACTIVE.pressedOpacityLight : 1,
+                },
+              ]}
+            >
+              <Text style={styles.errorButtonText}>Go back</Text>
+            </Pressable>
+          </GlassCard>
+        </View>
       </SafeAreaView>
     );
   }
@@ -27,9 +63,11 @@ export default function GoalDetailScreen() {
       <View style={styles.header}>
         <Pressable
           onPress={() => router.back()}
+          accessibilityLabel="Go back"
+          accessibilityRole="button"
           style={({ pressed }) => [
             styles.backButton,
-            { opacity: pressed ? 0.7 : 1 },
+            { opacity: pressed ? INTERACTIVE.pressedOpacity : 1 },
           ]}
         >
           <ArrowLeft size={24} color={theme.text} />
@@ -49,7 +87,7 @@ export default function GoalDetailScreen() {
               Progress
             </Text>
             <Text style={[styles.percentageValue, { color: accent.primary }]}>
-              {goal.pct}%
+              {goal.percent}%
             </Text>
           </View>
 
@@ -65,7 +103,7 @@ export default function GoalDetailScreen() {
                 style={[
                   styles.progressFill,
                   {
-                    width: `${goal.pct}%`,
+                    width: `${goal.percent}%`,
                     backgroundColor: accent.primary,
                   },
                 ]}
@@ -117,8 +155,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    paddingVertical: 16,
+    paddingHorizontal: SPACING.xl,
+    paddingVertical: SPACING.lg,
   },
   backButton: {
     width: 40,
@@ -127,50 +165,50 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   headerTitle: {
-    fontSize: 17,
-    fontWeight: '600',
+    fontSize: FONT_SIZE['3xl'],
+    fontWeight: FONT_WEIGHT.semibold,
   },
   placeholder: {
     width: 40,
   },
   content: {
     flex: 1,
-    paddingHorizontal: 20,
+    paddingHorizontal: SPACING.xl,
   },
   card: {
-    padding: 24,
+    padding: SPACING.xxl,
   },
   title: {
-    fontSize: 22,
-    fontWeight: '700',
-    marginBottom: 24,
+    fontSize: FONT_SIZE['5xl'],
+    fontWeight: FONT_WEIGHT.bold,
+    marginBottom: SPACING.xxl,
   },
   progressContainer: {
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: SPACING.lg,
   },
   percentageLabel: {
-    fontSize: 14,
-    marginBottom: 8,
+    fontSize: FONT_SIZE.lg,
+    marginBottom: SPACING.sm,
   },
   percentageValue: {
-    fontSize: 64,
-    fontWeight: '700',
+    fontSize: FONT_SIZE['8xl'],
+    fontWeight: FONT_WEIGHT.bold,
   },
   progressBarContainer: {
-    marginBottom: 32,
+    marginBottom: SPACING.xxxl,
   },
   progressTrack: {
-    height: 8,
-    borderRadius: 4,
+    height: SPACING.sm,
+    borderRadius: SPACING.xs,
     overflow: 'hidden',
   },
   progressFill: {
     height: '100%',
-    borderRadius: 4,
+    borderRadius: SPACING.xs,
   },
   details: {
-    gap: 16,
+    gap: SPACING.lg,
   },
   detailRow: {
     flexDirection: 'row',
@@ -178,15 +216,44 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   detailLabel: {
-    fontSize: 15,
+    fontSize: FONT_SIZE.xl,
   },
   detailValue: {
-    fontSize: 15,
-    fontWeight: '600',
+    fontSize: FONT_SIZE.xl,
+    fontWeight: FONT_WEIGHT.semibold,
   },
   deadlineLabel: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
+    gap: SPACING.sm - 2,
+  },
+  errorContainer: {
+    flex: 1,
+    paddingHorizontal: SPACING.xl,
+    justifyContent: 'center',
+  },
+  errorCard: {
+    padding: SPACING.xxxl,
+    alignItems: 'center',
+    gap: SPACING.md,
+  },
+  errorTitle: {
+    fontSize: FONT_SIZE['4xl'],
+    fontWeight: FONT_WEIGHT.semibold,
+  },
+  errorDescription: {
+    fontSize: FONT_SIZE.lg,
+    textAlign: 'center',
+  },
+  errorButton: {
+    marginTop: SPACING.lg,
+    paddingVertical: SPACING.md,
+    paddingHorizontal: SPACING.xxl,
+    borderRadius: RADIUS.lg,
+  },
+  errorButtonText: {
+    fontSize: FONT_SIZE.xl,
+    fontWeight: FONT_WEIGHT.semibold,
+    color: '#fff',
   },
 });

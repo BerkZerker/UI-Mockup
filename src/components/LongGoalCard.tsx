@@ -1,6 +1,6 @@
 import { View, Text, Pressable, StyleSheet } from 'react-native';
 import { Clock } from 'lucide-react-native';
-import { useTheme } from '../theme';
+import { useTheme, SPACING, FONT_SIZE, FONT_WEIGHT, RADIUS, INTERACTIVE } from '../theme';
 import { LongGoal } from '../types';
 import { GlassCard } from './GlassCard';
 
@@ -13,11 +13,11 @@ export function LongGoalCard({ goal, onPress }: LongGoalCardProps) {
   const { theme, accent } = useTheme();
 
   return (
-    <Pressable onPress={onPress} style={({ pressed }) => ({ opacity: pressed ? 0.7 : 1 })}>
+    <Pressable onPress={onPress} accessibilityLabel={`${goal.title}, ${goal.percent}% complete`} accessibilityRole="button" style={({ pressed }) => ({ opacity: pressed ? INTERACTIVE.pressedOpacity : 1 })}>
       <GlassCard style={styles.card}>
         <View style={styles.header}>
           <Text style={[styles.title, { color: theme.text }]}>{goal.title}</Text>
-          <Text style={[styles.percentage, { color: theme.text }]}>{goal.pct}%</Text>
+          <Text style={[styles.percentage, { color: theme.text }]}>{goal.percent}%</Text>
         </View>
 
         <View style={styles.progressBar}>
@@ -33,7 +33,7 @@ export function LongGoalCard({ goal, onPress }: LongGoalCardProps) {
               style={[
                 styles.progressFill,
                 {
-                  width: `${goal.pct}%`,
+                  width: `${goal.percent}%`,
                   backgroundColor: accent.primary,
                 },
               ]}
@@ -59,8 +59,8 @@ export function LongGoalCard({ goal, onPress }: LongGoalCardProps) {
 
 const styles = StyleSheet.create({
   card: {
-    padding: 16,
-    marginBottom: 12,
+    padding: SPACING.lg,
+    marginBottom: SPACING.md,
   },
   header: {
     flexDirection: 'row',
@@ -68,41 +68,41 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
   },
   title: {
-    fontSize: 15,
-    fontWeight: '600',
+    fontSize: FONT_SIZE.xl,
+    fontWeight: FONT_WEIGHT.semibold,
     flex: 1,
   },
   percentage: {
-    fontSize: 22,
-    fontWeight: '700',
-    marginLeft: 12,
+    fontSize: FONT_SIZE['5xl'],
+    fontWeight: FONT_WEIGHT.bold,
+    marginLeft: SPACING.md,
   },
   progressBar: {
-    marginTop: 12,
+    marginTop: SPACING.md,
   },
   progressTrack: {
     height: 6,
-    borderRadius: 3,
+    borderRadius: RADIUS.xs,
     overflow: 'hidden',
   },
   progressFill: {
     height: '100%',
-    borderRadius: 3,
+    borderRadius: RADIUS.xs,
   },
   footer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 10,
+    marginTop: SPACING.md - 2,
   },
   current: {
-    fontSize: 12,
+    fontSize: FONT_SIZE.md,
   },
   deadline: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4,
+    gap: SPACING.xs,
   },
   deadlineText: {
-    fontSize: 12,
+    fontSize: FONT_SIZE.md,
   },
 });

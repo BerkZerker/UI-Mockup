@@ -1,10 +1,11 @@
 import { ScrollView, Pressable, Text, StyleSheet } from 'react-native';
-import { useTheme } from '../theme';
+import { useTheme, SPACING, FONT_SIZE, FONT_WEIGHT, RADIUS, INTERACTIVE } from '../theme';
+import { CategoryFilter } from '../types';
 
 interface CategoryPillsProps {
-  categories: string[];
-  selected: string;
-  onSelect: (category: string) => void;
+  categories: CategoryFilter[];
+  selected: CategoryFilter;
+  onSelect: (category: CategoryFilter) => void;
 }
 
 export function CategoryPills({ categories, selected, onSelect }: CategoryPillsProps) {
@@ -23,11 +24,13 @@ export function CategoryPills({ categories, selected, onSelect }: CategoryPillsP
           <Pressable
             key={cat}
             onPress={() => onSelect(cat)}
+            accessibilityRole="button"
+            accessibilityState={{ selected: isSelected }}
             style={({ pressed }) => [
               styles.pill,
               {
                 backgroundColor: isSelected ? accent.primary : theme.pillBg,
-                opacity: pressed ? 0.7 : 1,
+                opacity: pressed ? INTERACTIVE.pressedOpacity : 1,
               },
             ]}
           >
@@ -36,7 +39,7 @@ export function CategoryPills({ categories, selected, onSelect }: CategoryPillsP
                 styles.pillText,
                 {
                   color: isSelected ? '#fff' : theme.pillText,
-                  fontWeight: isSelected ? '600' : '400',
+                  fontWeight: isSelected ? FONT_WEIGHT.semibold : FONT_WEIGHT.regular,
                 },
               ]}
             >
@@ -51,19 +54,19 @@ export function CategoryPills({ categories, selected, onSelect }: CategoryPillsP
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 16,
-    paddingHorizontal: 20,
+    marginTop: SPACING.lg,
+    paddingHorizontal: SPACING.xl,
   },
   content: {
     gap: 7,
-    paddingBottom: 2,
+    paddingBottom: SPACING.xxs,
   },
   pill: {
     paddingVertical: 7,
     paddingHorizontal: 15,
-    borderRadius: 14,
+    borderRadius: RADIUS.xl,
   },
   pillText: {
-    fontSize: 13,
+    fontSize: FONT_SIZE.base,
   },
 });

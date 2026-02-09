@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet } from 'react-native';
-import { useTheme } from '../theme';
+import { useTheme, SPACING, FONT_SIZE, FONT_WEIGHT } from '../theme';
 
 interface ScreenHeaderProps {
   title: string;
@@ -11,7 +11,7 @@ export function ScreenHeader({ title, subtitle }: ScreenHeaderProps) {
 
   return (
     <View style={styles.container}>
-      <Text style={[styles.title, { color: theme.text }]}>{title}</Text>
+      <Text accessibilityRole="header" style={[styles.title, { color: theme.text }]}>{title}</Text>
       {subtitle && (
         <Text style={[styles.subtitle, { color: theme.textSecondary }]}>
           {subtitle}
@@ -23,16 +23,16 @@ export function ScreenHeader({ title, subtitle }: ScreenHeaderProps) {
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: 20,
-    paddingTop: 16,
+    paddingHorizontal: SPACING.xl,
+    paddingTop: SPACING.lg,
   },
   title: {
-    fontSize: 22,
-    fontWeight: '700',
+    fontSize: FONT_SIZE['5xl'],
+    fontWeight: FONT_WEIGHT.bold,
     margin: 0,
   },
   subtitle: {
-    fontSize: 14,
-    marginTop: 2,
+    fontSize: FONT_SIZE.lg,
+    marginTop: SPACING.xxs,
   },
 });

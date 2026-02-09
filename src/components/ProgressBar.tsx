@@ -23,6 +23,8 @@ export function ProgressBar({ value, max, height = 5 }: ProgressBarProps) {
 
   return (
     <View
+      accessibilityLabel={`${Math.round(percentage)}% complete`}
+      accessibilityRole="progressbar"
       style={[
         styles.container,
         {

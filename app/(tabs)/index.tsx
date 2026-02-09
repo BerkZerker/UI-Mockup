@@ -2,10 +2,10 @@ import { useState } from 'react';
 import { View, Text, StyleSheet, FlatList } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { Target, Flame } from 'lucide-react-native';
-import { useTheme } from '../../src/theme';
+import { Target, Flame, Inbox } from 'lucide-react-native';
+import { useTheme, SPACING, FONT_SIZE, FONT_WEIGHT, RADIUS, INTERACTIVE } from '../../src/theme';
 import { useAppState } from '../../src/state/AppStateContext';
-import { CATS } from '../../src/data';
+import { CATEGORIES } from '../../src/data';
 import {
   GlassCard,
   ProgressBar,
@@ -21,11 +21,13 @@ export default function TodayScreen() {
   const router = useRouter();
   const [showAddMenu, setShowAddMenu] = useState(false);
 
-  const filtered = categoryFilter === 'All' ? goals : goals.filter((g) => g.cat === categoryFilter);
+  const filtered = categoryFilter === 'All' ? goals : goals.filter((g) => g.category === categoryFilter);
   const todayGoals = filtered.filter((g) => g.today);
-  const upcomingGoals = goals.filter((g) => !g.today);
+  const upcomingGoals = filtered.filter((g) => !g.today);
   const doneCount = goals.filter((g) => g.done && g.today).length;
   const totalCount = goals.filter((g) => g.today).length;
+
+  const bestStreak = goals.reduce((max, g) => Math.max(max, g.streak), 0);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -55,16 +57,18 @@ export default function TodayScreen() {
         <View style={styles.progressBarContainer}>
           <ProgressBar value={doneCount} max={totalCount} />
         </View>
-        <View style={styles.streak}>
-          <Flame size={12} color={theme.textTertiary} fill={theme.textTertiary} />
-          <Text style={[styles.streakText, { color: theme.textSecondary }]}>
-            12-day streak
-          </Text>
-        </View>
+        {bestStreak > 0 && (
+          <View style={styles.streak}>
+            <Flame size={12} color={theme.textTertiary} fill={theme.textTertiary} />
+            <Text style={[styles.streakText, { color: theme.textSecondary }]}>
+              {bestStreak}-day streak
+            </Text>
+          </View>
+        )}
       </GlassCard>
 
       <CategoryPills
-        categories={CATS}
+        categories={CATEGORIES}
         selected={categoryFilter}
         onSelect={setCategoryFilter}
       />
@@ -80,6 +84,14 @@ export default function TodayScreen() {
             showBorder={index < todayGoals.length - 1}
           />
         )}
+        ListEmptyComponent={
+          <View style={styles.emptyState}>
+            <Inbox size={32} color={theme.textTertiary} />
+            <Text style={[styles.emptyText, { color: theme.textTertiary }]}>
+              {categoryFilter === 'All' ? 'No goals for today' : `No goals in ${categoryFilter}`}
+            </Text>
+          </View>
+        }
         ListFooterComponent={
           categoryFilter === 'All' && upcomingGoals.length > 0 ? (
             <View style={styles.upcoming}>
@@ -113,80 +125,88 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
-    marginTop: 16,
-    paddingHorizontal: 20,
+    gap: SPACING.md - 2,
+    marginTop: SPACING.lg,
+    paddingHorizontal: SPACING.xl,
   },
   logo: {
     width: 34,
     height: 34,
-    borderRadius: 12,
+    borderRadius: RADIUS.lg,
     alignItems: 'center',
     justifyContent: 'center',
   },
   appName: {
-    fontSize: 22,
-    fontWeight: '700',
+    fontSize: FONT_SIZE['5xl'],
+    fontWeight: FONT_WEIGHT.bold,
     letterSpacing: -0.5,
   },
   progressCard: {
-    marginTop: 18,
-    marginHorizontal: 20,
-    padding: 16,
+    marginTop: SPACING.xl - 2,
+    marginHorizontal: SPACING.xl,
+    padding: SPACING.lg,
   },
   progressLabel: {
-    fontSize: 13,
+    fontSize: FONT_SIZE.base,
   },
   progressNumbers: {
     flexDirection: 'row',
     alignItems: 'baseline',
-    gap: 8,
-    marginTop: 6,
+    gap: SPACING.sm,
+    marginTop: SPACING.sm - 2,
   },
   progressDone: {
-    fontSize: 32,
-    fontWeight: '700',
+    fontSize: FONT_SIZE['7xl'],
+    fontWeight: FONT_WEIGHT.bold,
   },
   progressTotal: {
-    fontSize: 22,
-    fontWeight: '500',
+    fontSize: FONT_SIZE['5xl'],
+    fontWeight: FONT_WEIGHT.medium,
   },
   progressCompleted: {
-    fontSize: 13,
+    fontSize: FONT_SIZE.base,
   },
   progressBarContainer: {
-    marginTop: 12,
+    marginTop: SPACING.md,
   },
   streak: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
-    marginTop: 10,
+    gap: SPACING.sm - 2,
+    marginTop: SPACING.md - 2,
   },
   streakText: {
-    fontSize: 12,
-    fontWeight: '500',
+    fontSize: FONT_SIZE.md,
+    fontWeight: FONT_WEIGHT.medium,
+  },
+  emptyState: {
+    alignItems: 'center',
+    paddingVertical: SPACING.xxxl,
+    gap: SPACING.sm,
+  },
+  emptyText: {
+    fontSize: FONT_SIZE.lg,
   },
   listContent: {
-    paddingHorizontal: 20,
-    paddingTop: 10,
+    paddingHorizontal: SPACING.xl,
+    paddingTop: SPACING.md - 2,
     paddingBottom: 100,
   },
   upcoming: {
-    marginTop: 24,
+    marginTop: SPACING.xxl,
   },
   upcomingTitle: {
-    fontSize: 12,
-    fontWeight: '600',
+    fontSize: FONT_SIZE.md,
+    fontWeight: FONT_WEIGHT.semibold,
     textTransform: 'uppercase',
     letterSpacing: 0.8,
-    marginBottom: 4,
+    marginBottom: SPACING.xs,
   },
   upcomingItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
-    paddingVertical: 12,
+    gap: SPACING.md,
+    paddingVertical: SPACING.md,
   },
   upcomingDot: {
     width: 22,
@@ -196,6 +216,6 @@ const styles = StyleSheet.create({
     borderStyle: 'dashed',
   },
   upcomingText: {
-    fontSize: 14,
+    fontSize: FONT_SIZE.lg,
   },
 });

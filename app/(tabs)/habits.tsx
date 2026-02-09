@@ -2,9 +2,10 @@ import { useState } from 'react';
 import { View, Text, StyleSheet, FlatList, Pressable } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { useTheme } from '../../src/theme';
+import { Hash } from 'lucide-react-native';
+import { useTheme, SPACING, FONT_SIZE, FONT_WEIGHT } from '../../src/theme';
 import { useAppState } from '../../src/state/AppStateContext';
-import { WKDAYS } from '../../src/data';
+import { WEEKDAYS } from '../../src/data';
 import {
   ScreenHeader,
   HabitRow,
@@ -19,6 +20,12 @@ export default function HabitsScreen() {
   const router = useRouter();
   const [showAddMenu, setShowAddMenu] = useState(false);
 
+  const totalDays = habits.reduce((sum, h) => sum + h.week.length, 0);
+  const doneDays = habits.reduce((sum, h) => sum + h.week.filter((d) => d === 1).length, 0);
+  const completionPct = totalDays > 0 ? Math.round((doneDays / totalDays) * 100) : 0;
+  const bestStreak = habits.reduce((max, h) => Math.max(max, h.streak), 0);
+  const activeCount = habits.length;
+
   return (
     <SafeAreaView style={styles.container}>
       <ScreenHeader title="Habits" subtitle="Weekly tracker" />
@@ -30,7 +37,7 @@ export default function HabitsScreen() {
           <View style={styles.weekHeader}>
             <View style={styles.spacer} />
             <View style={styles.weekDays}>
-              {WKDAYS.map((day, i) => (
+              {WEEKDAYS.map((day, i) => (
                 <View key={i} style={styles.dayLabel}>
                   <Text style={[styles.dayText, { color: theme.textTertiary }]}>
                     {day}
@@ -49,13 +56,21 @@ export default function HabitsScreen() {
             />
           </Pressable>
         )}
+        ListEmptyComponent={
+          <View style={styles.emptyState}>
+            <Hash size={32} color={theme.textTertiary} />
+            <Text style={[styles.emptyText, { color: theme.textTertiary }]}>
+              No habits tracked yet
+            </Text>
+          </View>
+        }
         ListFooterComponent={
           <StatsSummaryCard
             title="This week"
             stats={[
-              { label: 'Completion', value: '71%' },
-              { label: 'Best streak', value: '12d' },
-              { label: 'Active', value: '5' },
+              { label: 'Completion', value: `${completionPct}%` },
+              { label: 'Best streak', value: `${bestStreak}d` },
+              { label: 'Active', value: `${activeCount}` },
             ]}
           />
         }
@@ -73,14 +88,14 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   content: {
-    paddingHorizontal: 20,
-    paddingTop: 12,
+    paddingHorizontal: SPACING.xl,
+    paddingTop: SPACING.md,
     paddingBottom: 100,
   },
   weekHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 6,
+    marginBottom: SPACING.sm - 2,
   },
   spacer: {
     flex: 1,
@@ -95,7 +110,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   dayText: {
-    fontSize: 11,
-    fontWeight: '500',
+    fontSize: FONT_SIZE.sm,
+    fontWeight: FONT_WEIGHT.medium,
+  },
+  emptyState: {
+    alignItems: 'center',
+    paddingVertical: SPACING.xxxl,
+    gap: SPACING.sm,
+  },
+  emptyText: {
+    fontSize: FONT_SIZE.lg,
   },
 });

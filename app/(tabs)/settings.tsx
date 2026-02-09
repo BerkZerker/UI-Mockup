@@ -2,8 +2,11 @@ import { View, Text, Switch, ScrollView, StyleSheet, Pressable } from 'react-nat
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ChevronRight, User } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
-import { useTheme } from '../../src/theme';
+import { useTheme, SPACING, FONT_SIZE, FONT_WEIGHT, INTERACTIVE } from '../../src/theme';
 import { ScreenHeader } from '../../src/components';
+import appJson from '../../app.json';
+
+const APP_VERSION = appJson.expo.version;
 
 export default function SettingsScreen() {
   const { theme, mode, toggleMode } = useTheme();
@@ -25,7 +28,7 @@ export default function SettingsScreen() {
           <Pressable
             style={({ pressed }) => [
               styles.settingRow,
-              { borderBottomWidth: 0, opacity: pressed ? 0.7 : 1 },
+              { borderBottomWidth: 0, opacity: pressed ? INTERACTIVE.pressedOpacity : 1 },
             ]}
             onPress={() => router.push('/(tabs)/profile')}
           >
@@ -49,6 +52,8 @@ export default function SettingsScreen() {
               onValueChange={toggleMode}
               trackColor={{ false: theme.pillBg, true: theme.success }}
               thumbColor="#fff"
+              accessibilityLabel="Dark mode"
+              accessibilityRole="switch"
             />
           </View>
         </View>
@@ -66,6 +71,8 @@ export default function SettingsScreen() {
               value={false}
               trackColor={{ false: theme.pillBg, true: theme.success }}
               thumbColor="#fff"
+              accessibilityLabel="Daily reminders"
+              accessibilityRole="switch"
             />
           </View>
           <View style={[styles.settingRow, { borderBottomColor: theme.borderSubtle }]}>
@@ -76,6 +83,8 @@ export default function SettingsScreen() {
               value={false}
               trackColor={{ false: theme.pillBg, true: theme.success }}
               thumbColor="#fff"
+              accessibilityLabel="Streak alerts"
+              accessibilityRole="switch"
             />
           </View>
         </View>
@@ -88,7 +97,7 @@ export default function SettingsScreen() {
           <Pressable
             style={({ pressed }) => [
               styles.settingRow,
-              { borderBottomColor: theme.borderSubtle, opacity: pressed ? 0.7 : 1 },
+              { borderBottomColor: theme.borderSubtle, opacity: pressed ? INTERACTIVE.pressedOpacity : 1 },
             ]}
             onPress={() => {}}
           >
@@ -112,7 +121,7 @@ export default function SettingsScreen() {
           <View style={[styles.settingRow, { borderBottomWidth: 0 }]}>
             <Text style={[styles.settingLabel, { color: theme.text }]}>Version</Text>
             <Text style={[styles.settingValue, { color: theme.textTertiary }]}>
-              1.0.0
+              {APP_VERSION}
             </Text>
           </View>
         </View>
@@ -126,36 +135,36 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   content: {
-    paddingTop: 24,
+    paddingTop: SPACING.xxl,
     paddingBottom: 100,
   },
   section: {
-    marginBottom: 32,
+    marginBottom: SPACING.xxxl,
   },
   sectionTitle: {
-    fontSize: 12,
-    fontWeight: '600',
+    fontSize: FONT_SIZE.md,
+    fontWeight: FONT_WEIGHT.semibold,
     textTransform: 'uppercase',
     letterSpacing: 0.8,
-    paddingHorizontal: 20,
-    marginBottom: 12,
+    paddingHorizontal: SPACING.xl,
+    marginBottom: SPACING.md,
   },
   settingRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: 14,
-    paddingHorizontal: 20,
+    paddingVertical: SPACING.lg - 2,
+    paddingHorizontal: SPACING.xl,
     borderBottomWidth: 1,
   },
   settingLabel: {
-    fontSize: 15,
-    fontWeight: '400',
+    fontSize: FONT_SIZE.xl,
+    fontWeight: FONT_WEIGHT.regular,
   },
   settingLeft: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
+    gap: SPACING.md,
   },
   settingIcon: {
     marginRight: 0,
@@ -163,9 +172,9 @@ const styles = StyleSheet.create({
   settingRight: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    gap: SPACING.sm,
   },
   settingValue: {
-    fontSize: 15,
+    fontSize: FONT_SIZE.xl,
   },
 });
