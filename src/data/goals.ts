@@ -1,0 +1,95 @@
+import { Goal, LongGoal } from '../types';
+
+export const GOALS_INIT: Goal[] = [
+  {
+    id: 1,
+    title: 'Read 20 pages',
+    cat: 'Learning',
+    done: true,
+    streak: 12,
+    today: true,
+  },
+  {
+    id: 2,
+    title: 'Morning meditation -- 10 min',
+    cat: 'Wellness',
+    done: true,
+    streak: 5,
+    today: true,
+  },
+  {
+    id: 3,
+    title: 'Write 500 words',
+    cat: 'Creative',
+    done: false,
+    streak: 8,
+    today: true,
+  },
+  {
+    id: 4,
+    title: '30 min walk outside',
+    cat: 'Fitness',
+    done: false,
+    streak: 3,
+    today: true,
+  },
+  {
+    id: 5,
+    title: 'Review budget spreadsheet',
+    cat: 'Finance',
+    done: false,
+    streak: 0,
+    today: true,
+  },
+  {
+    id: 6,
+    title: 'Practice guitar scales',
+    cat: 'Creative',
+    done: false,
+    streak: 15,
+    today: false,
+  },
+  {
+    id: 7,
+    title: 'Drink 8 glasses of water',
+    cat: 'Wellness',
+    done: false,
+    streak: 22,
+    today: true,
+  },
+];
+
+export const LONG_GOALS: LongGoal[] = [
+  {
+    id: 1,
+    title: 'Run a half marathon',
+    pct: 65,
+    target: '13.1 mi',
+    current: '8.5 mi',
+    deadline: 'Mar 15',
+  },
+  {
+    id: 2,
+    title: 'Read 24 books this year',
+    pct: 25,
+    target: '24 books',
+    current: '6 books',
+    deadline: 'Dec 31',
+  },
+  {
+    id: 3,
+    title: 'Save $5,000',
+    pct: 42,
+    target: '$5,000',
+    current: '$2,100',
+    deadline: 'Jun 30',
+  },
+  {
+    id: 4,
+    title: 'Learn conversational Spanish',
+    pct: 18,
+    target: 'B1 level',
+    current: 'A2 level',
+    deadline: 'Sep 1',
+  },
+];
