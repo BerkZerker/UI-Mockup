@@ -58,7 +58,7 @@ npx expo start --android
 
 ## Project Structure
 
-```
+```text
 MicroGoals/
 ├── app/                      # Expo Router screens
 │   ├── _layout.tsx           # Root layout with providers
@@ -84,12 +84,14 @@ MicroGoals/
 ## Features Breakdown
 
 ### Theme System
+
 - Dark and light modes with smooth transitions
 - Deep green accent color (#4a8d5f)
 - Glass morphism effects (iOS BlurView, Android fallback)
 - WCAG AA compliant color contrast
 
 ### State Management
+
 - In-memory state using React Context
 - Toggle goals/habits
 - Category filtering
@@ -97,6 +99,7 @@ MicroGoals/
 - Reset functionality
 
 ### Navigation
+
 - 6-tab bottom navigation
 - Modal detail screens for goals/habits
 - Smooth transitions with native animations
