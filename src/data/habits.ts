@@ -1,6 +1,5 @@
-import { Habit } from '../types';
-
-export const HABITS_INIT: Habit[] = [
+/** Legacy mock habits used for initial migration. Typed loosely since they get migrated. */
+export const HABITS_INIT = [
   {
     id: 1,
     title: 'Meditate',

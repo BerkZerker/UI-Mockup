@@ -1,13 +1,17 @@
 import { Tabs } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { Platform, View } from 'react-native';
+import { View } from 'react-native';
 import { BlurView } from 'expo-blur';
 import {
-  Inbox,
-  Calendar,
-  Hash,
-  Target,
-  Settings
+  CalendarCheck,
+  CalendarDays,
+  BarChart3,
+  BarChart2,
+  Sparkles,
+  Sparkle,
+  LayoutList,
+  List,
+  Settings,
 } from 'lucide-react-native';
 import { useTheme } from '../../src/theme';
 import { DotPattern } from '../../src/components';
@@ -62,41 +66,50 @@ export default function TabsLayout() {
           name="index"
           options={{
             title: 'Today',
-            tabBarIcon: ({ color, size }) => <Inbox size={size} color={color} />,
+            tabBarIcon: ({ color, size, focused }) =>
+              focused
+                ? <CalendarCheck size={size} color={color} fill={color} />
+                : <CalendarDays size={size} color={color} />,
           }}
         />
         <Tabs.Screen
-          name="plan"
+          name="stats"
           options={{
-            title: 'Plan',
-            tabBarIcon: ({ color, size }) => <Calendar size={size} color={color} />,
+            title: 'Stats',
+            tabBarIcon: ({ color, size, focused }) =>
+              focused
+                ? <BarChart3 size={size} color={color} fill={color} />
+                : <BarChart2 size={size} color={color} />,
+          }}
+        />
+        <Tabs.Screen
+          name="insights"
+          options={{
+            title: 'Insights',
+            tabBarIcon: ({ color, size, focused }) =>
+              focused
+                ? <Sparkles size={size} color={color} fill={color} />
+                : <Sparkle size={size} color={color} />,
           }}
         />
         <Tabs.Screen
           name="habits"
           options={{
             title: 'Habits',
-            tabBarIcon: ({ color, size }) => <Hash size={size} color={color} />,
-          }}
-        />
-        <Tabs.Screen
-          name="goals"
-          options={{
-            title: 'Goals',
-            tabBarIcon: ({ color, size }) => <Target size={size} color={color} />,
+            tabBarIcon: ({ color, size, focused }) =>
+              focused
+                ? <LayoutList size={size} color={color} />
+                : <List size={size} color={color} />,
           }}
         />
         <Tabs.Screen
           name="settings"
           options={{
             title: 'Settings',
-            tabBarIcon: ({ color, size }) => <Settings size={size} color={color} />,
-          }}
-        />
-        <Tabs.Screen
-          name="profile"
-          options={{
-            href: null,
+            tabBarIcon: ({ color, size, focused }) =>
+              focused
+                ? <Settings size={size} color={color} fill={color} />
+                : <Settings size={size} color={color} />,
           }}
         />
       </Tabs>

@@ -1,84 +1,133 @@
-import { useState } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { View, Text, StyleSheet, FlatList, Pressable } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { ChevronRight, Flame, Archive } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
-import { Hash } from 'lucide-react-native';
-import { useTheme, SPACING, FONT_SIZE, FONT_WEIGHT } from '../../src/theme';
-import { useAppState } from '../../src/state/AppStateContext';
-import { WEEKDAYS } from '../../src/data';
-import {
-  ScreenHeader,
-  HabitRow,
-  StatsSummaryCard,
-  FAB,
-  AddGoalMenu,
-} from '../../src/components';
+import { useTheme, SPACING, FONT_SIZE, FONT_WEIGHT, RADIUS, INTERACTIVE } from '../../src/theme';
+import { getHabitColor } from '../../src/theme/palette';
+import { useAppState } from '../../src/state';
+import { Habit } from '../../src/types';
+import { getFrequencyLabel } from '../../src/utils/streaks';
+import { triggerHaptic } from '../../src/utils/haptics';
+import { ScreenHeader, FAB } from '../../src/components';
+import { HabitFormSheet } from '../../src/components/habit-form/HabitFormSheet';
 
 export default function HabitsScreen() {
-  const { theme } = useTheme();
-  const { habits, toggleHabitDay } = useAppState();
+  const { theme, accent } = useTheme();
+  const { habits, addHabit, updateHabit, getHabitStreak } = useAppState();
   const router = useRouter();
-  const [showAddMenu, setShowAddMenu] = useState(false);
+  const [showHabitForm, setShowHabitForm] = useState(false);
+  const [showArchived, setShowArchived] = useState(false);
 
-  const totalDays = habits.reduce((sum, h) => sum + h.week.length, 0);
-  const doneDays = habits.reduce((sum, h) => sum + h.week.filter((d) => d === 1).length, 0);
-  const completionPct = totalDays > 0 ? Math.round((doneDays / totalDays) * 100) : 0;
-  const bestStreak = habits.reduce((max, h) => Math.max(max, h.streak), 0);
-  const activeCount = habits.length;
+  const activeHabits = useMemo(() => habits.filter(h => !h.archived), [habits]);
+  const archivedHabits = useMemo(() => habits.filter(h => h.archived), [habits]);
+
+  const handleSaveHabit = useCallback((habit: Habit) => {
+    if (habits.find(h => h.id === habit.id)) {
+      updateHabit(habit.id, habit);
+    } else {
+      addHabit(habit);
+      triggerHaptic('medium');
+    }
+  }, [habits, addHabit, updateHabit]);
+
+  const renderHabitCard = ({ item }: { item: Habit }) => {
+    const habitColor = getHabitColor(item.colorId);
+    const streak = getHabitStreak(item.id);
+    const freqLabel = getFrequencyLabel(item.selectedDays);
+    const initial = item.title.charAt(0).toUpperCase();
+
+    return (
+      <Pressable
+        onPress={() => router.push(`/habit/${item.id}`)}
+        style={({ pressed }) => [
+          styles.habitCard,
+          {
+            backgroundColor: theme.bgSecondary,
+            borderColor: theme.borderSubtle,
+            opacity: pressed ? INTERACTIVE.pressedOpacity : 1,
+          },
+        ]}
+      >
+        {/* Icon circle with initial */}
+        <View style={[styles.iconCircle, { backgroundColor: habitColor.muted }]}>
+          <Text style={[styles.iconInitial, { color: habitColor.primary }]}>{initial}</Text>
+        </View>
+
+        {/* Info */}
+        <View style={styles.cardInfo}>
+          <Text style={[styles.cardTitle, { color: theme.text }]}>{item.title}</Text>
+          <View style={styles.cardMeta}>
+            <Text style={[styles.cardCategory, { color: theme.textTertiary }]}>{item.category}</Text>
+            <Text style={[styles.cardDot, { color: theme.textTertiary }]}> · </Text>
+            <Text style={[styles.cardFreq, { color: theme.textTertiary }]}>{freqLabel}</Text>
+          </View>
+        </View>
+
+        {/* Streak badge */}
+        {streak > 0 && (
+          <View style={[styles.streakBadge, { backgroundColor: accent.primaryFaint }]}>
+            <Flame size={12} color={accent.primary} fill={accent.primary} />
+            <Text style={[styles.streakText, { color: accent.primary }]}>{streak}</Text>
+          </View>
+        )}
+
+        <ChevronRight size={18} color={theme.textTertiary} />
+      </Pressable>
+    );
+  };
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScreenHeader title="Habits" subtitle="Weekly tracker" />
+      <ScreenHeader title="Habits" subtitle={`${activeHabits.length} active habits`} />
 
       <FlatList
-        data={habits}
-        keyExtractor={(item) => item.id.toString()}
-        ListHeaderComponent={
-          <View style={styles.weekHeader}>
-            <View style={styles.spacer} />
-            <View style={styles.weekDays}>
-              {WEEKDAYS.map((day, i) => (
-                <View key={i} style={styles.dayLabel}>
-                  <Text style={[styles.dayText, { color: theme.textTertiary }]}>
-                    {day}
-                  </Text>
-                </View>
-              ))}
-            </View>
-          </View>
-        }
-        renderItem={({ item, index }) => (
-          <Pressable onPress={() => router.push(`/habit/${item.id}`)}>
-            <HabitRow
-              habit={item}
-              onToggleDay={toggleHabitDay}
-              showBorder={index < habits.length - 1}
-            />
-          </Pressable>
-        )}
+        data={activeHabits}
+        keyExtractor={(item) => item.id}
+        renderItem={renderHabitCard}
         ListEmptyComponent={
           <View style={styles.emptyState}>
-            <Hash size={32} color={theme.textTertiary} />
             <Text style={[styles.emptyText, { color: theme.textTertiary }]}>
-              No habits tracked yet
+              No habits tracked yet. Tap + to create one.
             </Text>
           </View>
         }
         ListFooterComponent={
-          <StatsSummaryCard
-            title="This week"
-            stats={[
-              { label: 'Completion', value: `${completionPct}%` },
-              { label: 'Best streak', value: `${bestStreak}d` },
-              { label: 'Active', value: `${activeCount}` },
-            ]}
-          />
+          archivedHabits.length > 0 ? (
+            <View style={styles.archivedSection}>
+              <Pressable
+                onPress={() => setShowArchived(!showArchived)}
+                style={({ pressed }) => [
+                  styles.archivedToggle,
+                  { opacity: pressed ? INTERACTIVE.pressedOpacity : 1 },
+                ]}
+              >
+                <Archive size={14} color={theme.textTertiary} />
+                <Text style={[styles.archivedLabel, { color: theme.textTertiary }]}>
+                  {showArchived ? 'Hide' : 'Show'} archived ({archivedHabits.length})
+                </Text>
+              </Pressable>
+              {showArchived && (
+                <FlatList
+                  data={archivedHabits}
+                  keyExtractor={(item) => item.id}
+                  renderItem={renderHabitCard}
+                  scrollEnabled={false}
+                />
+              )}
+            </View>
+          ) : null
         }
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
       />
-      <FAB onPress={() => setShowAddMenu(true)} />
-      <AddGoalMenu visible={showAddMenu} onClose={() => setShowAddMenu(false)} />
+
+      <FAB onPress={() => setShowHabitForm(true)} />
+      <HabitFormSheet
+        visible={showHabitForm}
+        onClose={() => setShowHabitForm(false)}
+        onSave={handleSaveHabit}
+      />
     </SafeAreaView>
   );
 }
@@ -89,36 +138,83 @@ const styles = StyleSheet.create({
   },
   content: {
     paddingHorizontal: SPACING.xl,
-    paddingTop: SPACING.md,
+    paddingTop: SPACING.lg,
     paddingBottom: 100,
   },
-  weekHeader: {
+  habitCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: SPACING.sm - 2,
+    padding: SPACING.lg,
+    borderRadius: RADIUS['3xl'],
+    borderWidth: 1,
+    marginBottom: SPACING.sm,
   },
-  spacer: {
+  iconCircle: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: SPACING.md,
+  },
+  iconInitial: {
+    fontSize: FONT_SIZE['2xl'],
+    fontWeight: FONT_WEIGHT.bold,
+  },
+  cardInfo: {
     flex: 1,
   },
-  weekDays: {
-    flexDirection: 'row',
-    gap: 0,
-    width: 196,
-  },
-  dayLabel: {
-    width: 28,
-    alignItems: 'center',
-  },
-  dayText: {
-    fontSize: FONT_SIZE.sm,
+  cardTitle: {
+    fontSize: FONT_SIZE.xl,
     fontWeight: FONT_WEIGHT.medium,
+  },
+  cardMeta: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: SPACING.xxs,
+  },
+  cardCategory: {
+    fontSize: FONT_SIZE.md,
+  },
+  cardDot: {
+    fontSize: FONT_SIZE.md,
+  },
+  cardFreq: {
+    fontSize: FONT_SIZE.md,
+  },
+  streakBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: SPACING.xxs,
+    paddingVertical: SPACING.xxs + 1,
+    paddingHorizontal: SPACING.sm,
+    borderRadius: RADIUS.full,
+    marginRight: SPACING.sm,
+  },
+  streakText: {
+    fontSize: FONT_SIZE.sm,
+    fontWeight: FONT_WEIGHT.semibold,
   },
   emptyState: {
     alignItems: 'center',
-    paddingVertical: SPACING.xxxl,
-    gap: SPACING.sm,
+    paddingVertical: SPACING.xxxl * 2,
   },
   emptyText: {
     fontSize: FONT_SIZE.lg,
+    textAlign: 'center',
+  },
+  archivedSection: {
+    marginTop: SPACING.xxl,
+  },
+  archivedToggle: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: SPACING.sm,
+    paddingVertical: SPACING.md,
+    marginBottom: SPACING.sm,
+  },
+  archivedLabel: {
+    fontSize: FONT_SIZE.base,
+    fontWeight: FONT_WEIGHT.medium,
   },
 });

@@ -6,9 +6,12 @@ interface ProgressBarProps {
   value: number;
   max: number;
   height?: number;
+  /** Optional override color (defaults to accent.primary) */
+  color?: string;
 }
 
-export function ProgressBar({ value, max, height = 5 }: ProgressBarProps) {
+/** Animated progress bar with optional custom color */
+export function ProgressBar({ value, max, height = 5, color }: ProgressBarProps) {
   const { theme, accent } = useTheme();
   const percentage = max > 0 ? (value / max) * 100 : 0;
   const widthAnim = useRef(new Animated.Value(0)).current;
@@ -38,7 +41,7 @@ export function ProgressBar({ value, max, height = 5 }: ProgressBarProps) {
         style={[
           styles.fill,
           {
-            backgroundColor: accent.primary,
+            backgroundColor: color || accent.primary,
             borderRadius: height / 2,
             width: widthAnim.interpolate({
               inputRange: [0, 100],

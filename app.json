@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "MicroGoals",
-    "slug": "MicroGoals",
-    "scheme": "microgoals",
+    "name": "Scaffold",
+    "slug": "scaffold-habit-builder",
+    "scheme": "scaffold",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",

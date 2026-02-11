@@ -1,6 +1,9 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ACCENT, THEMES } from './colors';
 import { ThemeMode, ThemeColors, AccentColors } from '../types';
+
+const THEME_STORAGE_KEY = '@scaffold/themeMode';
 
 interface ThemeContextValue {
   mode: ThemeMode;
@@ -15,11 +18,25 @@ interface ThemeProviderProps {
   children: ReactNode;
 }
 
+/** Provides theme context with persistent dark/light mode */
 export function ThemeProvider({ children }: ThemeProviderProps) {
   const [mode, setMode] = useState<ThemeMode>('dark');
 
+  // Load saved theme on mount
+  useEffect(() => {
+    AsyncStorage.getItem(THEME_STORAGE_KEY).then(saved => {
+      if (saved === 'light' || saved === 'dark') {
+        setMode(saved);
+      }
+    }).catch(() => {});
+  }, []);
+
   const toggleMode = () => {
-    setMode((prev) => (prev === 'dark' ? 'light' : 'dark'));
+    setMode(prev => {
+      const next = prev === 'dark' ? 'light' : 'dark';
+      AsyncStorage.setItem(THEME_STORAGE_KEY, next).catch(() => {});
+      return next;
+    });
   };
 
   const value: ThemeContextValue = {
@@ -34,6 +51,7 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
   );
 }
 
+/** Access the theme context. Must be used within ThemeProvider. */
 export function useTheme() {
   const context = useContext(ThemeContext);
   if (!context) {

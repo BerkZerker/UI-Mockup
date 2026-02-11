@@ -26,13 +26,13 @@ export const THEMES: Record<'dark' | 'light', ThemeColors> = {
     glassHighlight: 'rgba(255,255,255,0.04)',
     // Text — all pass WCAG AA on #212125
     text: '#eeeeee', // 13.8:1
-    textSecondary: '#c4c4c4', // 9.5:1
-    textTertiary: '#8e8e8e', // 5.2:1
+    textSecondary: '#d0d0d0',
+    textTertiary: '#9a9a9a',
     // Borders & UI
     border: '#3c3c3c',
     borderSubtle: '#303030',
     pillBg: 'rgba(255,255,255,0.06)',
-    pillText: '#b0b0b0',
+    pillText: '#bcbcbc',
     // Semantic
     success: '#4a8d5f',
     danger: '#e05555',
@@ -46,12 +46,12 @@ export const THEMES: Record<'dark' | 'light', ThemeColors> = {
     glassBorder: 'rgba(0,0,0,0.06)',
     glassHighlight: 'rgba(255,255,255,0.80)',
     text: '#1a1a1a',
-    textSecondary: '#4a4a4a',
-    textTertiary: '#7a7a7a',
+    textSecondary: '#3a3a3a',
+    textTertiary: '#606060',
     border: '#dcdcdc',
     borderSubtle: '#e8e8e8',
     pillBg: 'rgba(0,0,0,0.04)',
-    pillText: '#5a5a5a',
+    pillText: '#4a4a4a',
     success: '#4a8d5f',
     danger: '#d44',
   },
