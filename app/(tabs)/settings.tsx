@@ -21,7 +21,7 @@ export default function SettingsScreen() {
     <SafeAreaView style={styles.safe} edges={["top"]}>
       <View style={styles.header}>
         <Text style={[styles.title, { color: theme.textPrimary }]}>
-          Settings
+          More
         </Text>
       </View>
 

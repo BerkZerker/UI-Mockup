@@ -1,30 +1,35 @@
 import { useMemo } from "react";
-import { View, Text, ScrollView, StyleSheet, Pressable } from "react-native";
+import { View, Text, ScrollView, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Sun, Moon } from "lucide-react-native";
 import {
   useTheme,
   SPACING,
   FONT_SIZE,
   FONT_WEIGHT,
-  RADIUS,
 } from "../../src/theme";
 import { useHabits } from "../../src/state";
 import {
   ProgressRing,
-  InsightCard,
   HabitCard,
-  AddHabitButton,
+  ProgressBar,
+  AggregateWeeklyHeatmap,
 } from "../../src/components";
 
 export default function TodayScreen() {
-  const { theme, mode, toggleMode } = useTheme();
+  const { theme } = useTheme();
   const { habits, toggleHabit } = useHabits();
 
   const completedCount = useMemo(
     () => habits.filter((h) => h.completed).length,
     [habits],
   );
+
+  const aggregateWeekly = useMemo(() => {
+    return Array.from({ length: 7 }, (_, dayIndex) => {
+      const completed = habits.filter((h) => h.weekly[dayIndex] > 0).length;
+      return habits.length > 0 ? completed / habits.length : 0;
+    });
+  }, [habits]);
 
   const formattedDay = new Date()
     .toLocaleDateString("en-US", { weekday: "long" })
@@ -36,50 +41,30 @@ export default function TodayScreen() {
 
   return (
     <SafeAreaView style={styles.safe} edges={["top"]}>
+      {/* FIXED: Header */}
+      <View style={styles.header}>
+        <View>
+          <Text style={[styles.dayLabel, { color: theme.textMuted }]}>
+            {formattedDay}
+          </Text>
+          <Text style={[styles.dateLabel, { color: theme.textPrimary }]}>
+            {formattedDate}
+          </Text>
+        </View>
+        <ProgressRing completed={completedCount} total={habits.length} />
+      </View>
+
+      {/* FIXED: Stats Pane */}
+      <View style={styles.statsPane}>
+        <ProgressBar completed={completedCount} total={habits.length} />
+        <AggregateWeeklyHeatmap data={aggregateWeekly} />
+      </View>
+
+      {/* SCROLLABLE: Only habit cards */}
       <ScrollView
         contentContainerStyle={styles.scroll}
         showsVerticalScrollIndicator={false}
       >
-        {/* Header */}
-        <View style={styles.header}>
-          <View>
-            <Text style={[styles.dayLabel, { color: theme.textMuted }]}>
-              {formattedDay}
-            </Text>
-            <Text style={[styles.dateLabel, { color: theme.textPrimary }]}>
-              {formattedDate}
-            </Text>
-          </View>
-          <View style={styles.headerRight}>
-            <ProgressRing completed={completedCount} total={habits.length} />
-            <Pressable
-              onPress={toggleMode}
-              style={[
-                styles.themeBtn,
-                {
-                  backgroundColor: theme.glassBackground,
-                  borderColor: theme.glassBorder,
-                },
-              ]}
-            >
-              {mode === "dark" ? (
-                <Sun size={16} color={theme.textMuted} />
-              ) : (
-                <Moon size={16} color={theme.textMuted} />
-              )}
-            </Pressable>
-          </View>
-        </View>
-
-        {/* Insight Card */}
-        <View style={styles.insightWrap}>
-          <InsightCard
-            title="You're on a roll with journaling"
-            description="23-day streak! You tend to journal best right after reading. Keep that pairing going."
-          />
-        </View>
-
-        {/* Habits Section */}
         <View style={styles.sectionHeader}>
           <Text style={[styles.sectionTitle, { color: theme.textSecondary }]}>
             Today's habits
@@ -94,8 +79,6 @@ export default function TodayScreen() {
             index={index}
           />
         ))}
-
-        <AddHabitButton />
       </ScrollView>
     </SafeAreaView>
   );
@@ -103,12 +86,12 @@ export default function TodayScreen() {
 
 const styles = StyleSheet.create({
   safe: { flex: 1 },
-  scroll: { padding: SPACING.xl, paddingBottom: 100 },
   header: {
+    paddingHorizontal: SPACING.xl,
+    paddingVertical: SPACING.md,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingVertical: SPACING.md,
   },
   dayLabel: {
     fontSize: FONT_SIZE.base,
@@ -121,16 +104,15 @@ const styles = StyleSheet.create({
     fontWeight: FONT_WEIGHT.bold,
     letterSpacing: -0.5,
   },
-  headerRight: { flexDirection: "row", alignItems: "center", gap: SPACING.md },
-  themeBtn: {
-    width: 36,
-    height: 36,
-    borderRadius: RADIUS.lg,
-    borderWidth: 1,
-    alignItems: "center",
-    justifyContent: "center",
+  statsPane: {
+    paddingHorizontal: SPACING.xl,
+    paddingBottom: SPACING.lg,
+    gap: SPACING.lg,
   },
-  insightWrap: { marginBottom: SPACING.xl },
+  scroll: {
+    paddingHorizontal: SPACING.xl,
+    paddingBottom: 100,
+  },
   sectionHeader: {
     flexDirection: "row",
     alignItems: "center",

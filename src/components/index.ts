@@ -6,3 +6,6 @@ export { WeeklyHeatmap } from "./WeeklyHeatmap";
 export { ProgressRing } from "./ProgressRing";
 export { InsightCard } from "./InsightCard";
 export { AddHabitButton } from "./AddHabitButton";
+export { ProgressBar } from "./ProgressBar";
+export { AggregateWeeklyHeatmap } from "./AggregateWeeklyHeatmap";
+export { FAB } from "./FAB";
