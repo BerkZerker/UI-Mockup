@@ -1,2 +1,1 @@
-export * from './habits';
-export * from './categories';
+export { INITIAL_HABITS } from './habits';

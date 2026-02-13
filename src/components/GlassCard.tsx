@@ -1,4 +1,4 @@
-import { View, ViewStyle, Platform, StyleSheet } from 'react-native';
+import { View, ViewStyle, Platform } from 'react-native';
 import { BlurView } from 'expo-blur';
 import { useTheme, RADIUS } from '../theme';
 import { ReactNode } from 'react';
@@ -7,10 +7,9 @@ interface GlassCardProps {
   children: ReactNode;
   style?: ViewStyle;
   intensity?: number;
-  subtle?: boolean;
 }
 
-export function GlassCard({ children, style, intensity = 40, subtle = false }: GlassCardProps) {
+export function GlassCard({ children, style, intensity = 40 }: GlassCardProps) {
   const { theme, mode } = useTheme();
 
   if (Platform.OS === 'ios') {
@@ -22,7 +21,7 @@ export function GlassCard({ children, style, intensity = 40, subtle = false }: G
           {
             borderWidth: 1,
             borderColor: theme.glassBorder,
-            borderRadius: subtle ? RADIUS['2xl'] : RADIUS['3xl'],
+            borderRadius: RADIUS.xl,
             overflow: 'hidden',
           },
           style,
@@ -33,15 +32,14 @@ export function GlassCard({ children, style, intensity = 40, subtle = false }: G
     );
   }
 
-  // Android fallback
   return (
     <View
       style={[
         {
-          backgroundColor: theme.glassBg,
+          backgroundColor: theme.glassBackground,
           borderWidth: 1,
           borderColor: theme.glassBorder,
-          borderRadius: subtle ? RADIUS['2xl'] : RADIUS['3xl'],
+          borderRadius: RADIUS.xl,
         },
         style,
       ]}

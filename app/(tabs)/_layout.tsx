@@ -5,29 +5,28 @@ import { BlurView } from 'expo-blur';
 import {
   CalendarCheck,
   CalendarDays,
-  BarChart3,
-  BarChart2,
-  Sparkles,
-  Sparkle,
-  LayoutList,
   List,
+  LayoutList,
+  Sparkle,
+  Sparkles,
   Settings,
 } from 'lucide-react-native';
 import { useTheme } from '../../src/theme';
-import { DotPattern } from '../../src/components';
+import { NoiseBackground, GradientWash } from '../../src/components';
 
 export default function TabsLayout() {
-  const { theme, accent, mode } = useTheme();
+  const { theme, mode } = useTheme();
 
   return (
     <View style={{ flex: 1, backgroundColor: theme.bg }}>
-      <DotPattern />
+      <NoiseBackground />
+      <GradientWash />
       <StatusBar style={mode === 'dark' ? 'light' : 'dark'} />
       <Tabs
         screenOptions={{
           headerShown: false,
-          tabBarActiveTintColor: accent.primary,
-          tabBarInactiveTintColor: theme.textTertiary,
+          tabBarActiveTintColor: theme.accent,
+          tabBarInactiveTintColor: theme.textMuted,
           sceneStyle: { backgroundColor: 'transparent' },
           tabBarStyle: {
             backgroundColor: 'transparent',
@@ -51,15 +50,12 @@ export default function TabsLayout() {
                 bottom: 0,
                 borderTopWidth: 1,
                 borderTopColor: theme.glassBorder,
-                backgroundColor: mode === 'dark' ? 'rgba(33, 33, 33, 0.3)' : 'rgba(245, 245, 245, 0.3)',
+                backgroundColor: mode === 'dark' ? 'rgba(33,33,33,0.3)' : 'rgba(245,245,245,0.3)',
                 overflow: 'hidden',
               }}
             />
           ),
-          tabBarLabelStyle: {
-            fontSize: 10,
-            fontWeight: '400',
-          },
+          tabBarLabelStyle: { fontSize: 10, fontWeight: '500' },
         }}
       >
         <Tabs.Screen
@@ -73,13 +69,13 @@ export default function TabsLayout() {
           }}
         />
         <Tabs.Screen
-          name="stats"
+          name="habits"
           options={{
-            title: 'Stats',
+            title: 'Habits',
             tabBarIcon: ({ color, size, focused }) =>
               focused
-                ? <BarChart3 size={size} color={color} fill={color} />
-                : <BarChart2 size={size} color={color} />,
+                ? <LayoutList size={size} color={color} />
+                : <List size={size} color={color} />,
           }}
         />
         <Tabs.Screen
@@ -90,16 +86,6 @@ export default function TabsLayout() {
               focused
                 ? <Sparkles size={size} color={color} fill={color} />
                 : <Sparkle size={size} color={color} />,
-          }}
-        />
-        <Tabs.Screen
-          name="habits"
-          options={{
-            title: 'Habits',
-            tabBarIcon: ({ color, size, focused }) =>
-              focused
-                ? <LayoutList size={size} color={color} />
-                : <List size={size} color={color} />,
           }}
         />
         <Tabs.Screen
