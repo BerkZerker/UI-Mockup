@@ -1,7 +1,7 @@
-import { View, ViewStyle, Platform } from 'react-native';
-import { BlurView } from 'expo-blur';
-import { useTheme, RADIUS } from '../theme';
-import { ReactNode } from 'react';
+import { View, ViewStyle, Platform } from "react-native";
+import { BlurView } from "expo-blur";
+import { useTheme, RADIUS } from "../theme";
+import { ReactNode } from "react";
 
 interface GlassCardProps {
   children: ReactNode;
@@ -12,17 +12,17 @@ interface GlassCardProps {
 export function GlassCard({ children, style, intensity = 40 }: GlassCardProps) {
   const { theme, mode } = useTheme();
 
-  if (Platform.OS === 'ios') {
+  if (Platform.OS === "ios") {
     return (
       <BlurView
         intensity={intensity}
-        tint={mode === 'dark' ? 'dark' : 'light'}
+        tint={mode === "dark" ? "dark" : "light"}
         style={[
           {
             borderWidth: 1,
             borderColor: theme.glassBorder,
             borderRadius: RADIUS.xl,
-            overflow: 'hidden',
+            overflow: "hidden",
           },
           style,
         ]}

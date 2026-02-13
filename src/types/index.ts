@@ -1,6 +1,14 @@
-export type HabitColorId = 'sage' | 'teal' | 'sky' | 'lavender' | 'coral' | 'amber' | 'rose' | 'slate';
+export type HabitColorId =
+  | "sage"
+  | "teal"
+  | "sky"
+  | "lavender"
+  | "coral"
+  | "amber"
+  | "rose"
+  | "slate";
 
-export type ThemeMode = 'dark' | 'light';
+export type ThemeMode = "dark" | "light";
 
 export interface Habit {
   id: string;

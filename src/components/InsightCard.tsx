@@ -1,9 +1,9 @@
-import { useRef, useEffect } from 'react';
-import { View, Text, Animated, StyleSheet, Dimensions } from 'react-native';
-import { Sparkles } from 'lucide-react-native';
-import { useTheme, SPACING, FONT_SIZE, FONT_WEIGHT, RADIUS } from '../theme';
+import { useRef, useEffect } from "react";
+import { View, Text, Animated, StyleSheet, Dimensions } from "react-native";
+import { Sparkles } from "lucide-react-native";
+import { useTheme, SPACING, FONT_SIZE, FONT_WEIGHT, RADIUS } from "../theme";
 
-const { width: SCREEN_W } = Dimensions.get('window');
+const { width: SCREEN_W } = Dimensions.get("window");
 
 interface InsightCardProps {
   title: string;
@@ -17,8 +17,16 @@ export function InsightCard({ title, description }: InsightCardProps) {
 
   useEffect(() => {
     Animated.parallel([
-      Animated.timing(fadeAnim, { toValue: 1, duration: 500, useNativeDriver: true }),
-      Animated.timing(slideAnim, { toValue: 0, duration: 500, useNativeDriver: true }),
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 500,
+        useNativeDriver: true,
+      }),
+      Animated.timing(slideAnim, {
+        toValue: 0,
+        duration: 500,
+        useNativeDriver: true,
+      }),
     ]).start();
   }, []);
 
@@ -38,8 +46,12 @@ export function InsightCard({ title, description }: InsightCardProps) {
         <Sparkles size={16} color={theme.accent} />
       </View>
       <View style={styles.text}>
-        <Text style={[styles.title, { color: theme.textPrimary }]}>{title}</Text>
-        <Text style={[styles.desc, { color: theme.textMuted }]}>{description}</Text>
+        <Text style={[styles.title, { color: theme.textPrimary }]}>
+          {title}
+        </Text>
+        <Text style={[styles.desc, { color: theme.textMuted }]}>
+          {description}
+        </Text>
       </View>
     </Animated.View>
   );
@@ -50,19 +62,23 @@ const styles = StyleSheet.create({
     borderRadius: RADIUS.xl,
     borderWidth: 1,
     padding: 14,
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: SPACING.md,
-    alignItems: 'flex-start',
+    alignItems: "flex-start",
   },
   icon: {
     width: 32,
     height: 32,
     borderRadius: RADIUS.md,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     flexShrink: 0,
   },
   text: { flex: 1 },
-  title: { fontSize: FONT_SIZE.base, fontWeight: FONT_WEIGHT.semibold, marginBottom: 3 },
+  title: {
+    fontSize: FONT_SIZE.base,
+    fontWeight: FONT_WEIGHT.semibold,
+    marginBottom: 3,
+  },
   desc: { fontSize: FONT_SIZE.md, lineHeight: 17 },
 });

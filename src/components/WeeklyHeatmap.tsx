@@ -1,5 +1,5 @@
-import { View, StyleSheet } from 'react-native';
-import { useTheme } from '../theme';
+import { View, StyleSheet } from "react-native";
+import { useTheme } from "../theme";
 
 interface WeeklyHeatmapProps {
   data: number[];
@@ -28,6 +28,6 @@ export function WeeklyHeatmap({ data, color }: WeeklyHeatmapProps) {
 }
 
 const styles = StyleSheet.create({
-  row: { flexDirection: 'row', gap: 3, marginLeft: 'auto' },
+  row: { flexDirection: "row", gap: 3, marginLeft: "auto" },
   dot: { width: 8, height: 8, borderRadius: 2 },
 });

@@ -1,8 +1,8 @@
-import { View, StyleSheet, Dimensions } from 'react-native';
-import Svg, { Circle, Defs, Pattern, Rect } from 'react-native-svg';
-import { useTheme } from '../theme';
+import { View, StyleSheet, Dimensions } from "react-native";
+import Svg, { Circle, Defs, Pattern, Rect } from "react-native-svg";
+import { useTheme } from "../theme";
 
-const { width: W, height: H } = Dimensions.get('window');
+const { width: W, height: H } = Dimensions.get("window");
 const TILE = 80;
 const STEP = 6;
 
@@ -13,7 +13,13 @@ function hash(x: number, y: number): number {
   return (h >>> 0) / 4294967295;
 }
 
-const dots: { cx: number; cy: number; r: number; opDark: number; opLight: number }[] = [];
+const dots: {
+  cx: number;
+  cy: number;
+  r: number;
+  opDark: number;
+  opLight: number;
+}[] = [];
 for (let y = 0; y < TILE; y += STEP) {
   for (let x = 0; x < TILE; x += STEP) {
     const rand = hash(x, y);
@@ -29,14 +35,21 @@ for (let y = 0; y < TILE; y += STEP) {
 
 export function NoiseBackground() {
   const { mode } = useTheme();
-  const isDark = mode === 'dark';
-  const base = isDark ? '255,255,255' : '0,0,0';
+  const isDark = mode === "dark";
+  const base = isDark ? "255,255,255" : "0,0,0";
 
   return (
     <View style={styles.container} pointerEvents="none">
       <Svg width={W} height={H} style={styles.svg}>
         <Defs>
-          <Pattern id="noise" x="0" y="0" width={TILE} height={TILE} patternUnits="userSpaceOnUse">
+          <Pattern
+            id="noise"
+            x="0"
+            y="0"
+            width={TILE}
+            height={TILE}
+            patternUnits="userSpaceOnUse"
+          >
             {dots.map((d, i) => (
               <Circle
                 key={i}
@@ -55,6 +68,6 @@ export function NoiseBackground() {
 }
 
 const styles = StyleSheet.create({
-  container: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 },
-  svg: { position: 'absolute' },
+  container: { position: "absolute", top: 0, left: 0, right: 0, bottom: 0 },
+  svg: { position: "absolute" },
 });

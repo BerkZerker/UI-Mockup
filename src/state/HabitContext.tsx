@@ -1,6 +1,12 @@
-import React, { createContext, useContext, useState, useCallback, ReactNode } from 'react';
-import { Habit } from '../types';
-import { INITIAL_HABITS } from '../data';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useCallback,
+  ReactNode,
+} from "react";
+import { Habit } from "../types";
+import { INITIAL_HABITS } from "../data";
 
 interface HabitContextValue {
   habits: Habit[];
@@ -13,8 +19,8 @@ export function HabitProvider({ children }: { children: ReactNode }) {
   const [habits, setHabits] = useState<Habit[]>(INITIAL_HABITS);
 
   const toggleHabit = useCallback((id: string) => {
-    setHabits(prev =>
-      prev.map(h => (h.id === id ? { ...h, completed: !h.completed } : h)),
+    setHabits((prev) =>
+      prev.map((h) => (h.id === id ? { ...h, completed: !h.completed } : h)),
     );
   }, []);
 
@@ -27,6 +33,6 @@ export function HabitProvider({ children }: { children: ReactNode }) {
 
 export function useHabits() {
   const context = useContext(HabitContext);
-  if (!context) throw new Error('useHabits must be used within HabitProvider');
+  if (!context) throw new Error("useHabits must be used within HabitProvider");
   return context;
 }

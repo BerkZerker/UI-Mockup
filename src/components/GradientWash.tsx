@@ -1,8 +1,8 @@
-import { View, StyleSheet, Dimensions } from 'react-native';
-import Svg, { Defs, RadialGradient, Stop, Ellipse } from 'react-native-svg';
-import { useTheme } from '../theme';
+import { View, StyleSheet, Dimensions } from "react-native";
+import Svg, { Defs, RadialGradient, Stop, Ellipse } from "react-native-svg";
+import { useTheme } from "../theme";
 
-const { width: W, height: H } = Dimensions.get('window');
+const { width: W, height: H } = Dimensions.get("window");
 
 export function GradientWash() {
   const { theme } = useTheme();
@@ -16,12 +16,18 @@ export function GradientWash() {
             <Stop offset="1" stopColor={theme.accent} stopOpacity="0" />
           </RadialGradient>
         </Defs>
-        <Ellipse cx={W * 0.65} cy={H * 0.15} rx={W * 0.45} ry={H * 0.35} fill="url(#wash)" />
+        <Ellipse
+          cx={W * 0.65}
+          cy={H * 0.15}
+          rx={W * 0.45}
+          ry={H * 0.35}
+          fill="url(#wash)"
+        />
       </Svg>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 },
+  container: { position: "absolute", top: 0, left: 0, right: 0, bottom: 0 },
 });

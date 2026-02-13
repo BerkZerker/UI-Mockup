@@ -1,6 +1,6 @@
-import { useEffect, useRef } from 'react';
-import { Animated } from 'react-native';
-import Svg, { Rect, Path } from 'react-native-svg';
+import { useEffect, useRef } from "react";
+import { Animated } from "react-native";
+import Svg, { Circle, Path } from "react-native-svg";
 
 const AnimatedPath = Animated.createAnimatedComponent(Path);
 
@@ -23,13 +23,26 @@ export function Checkmark({ checked, color, size = 20 }: CheckmarkProps) {
   }, [checked]);
 
   return (
-    <Animated.View style={{ transform: [{ scale: scale.interpolate({ inputRange: [0, 1], outputRange: [0.95, 1] }) }] }}>
+    <Animated.View
+      style={{
+        transform: [
+          {
+            scale: scale.interpolate({
+              inputRange: [0, 1],
+              outputRange: [0.95, 1],
+            }),
+          },
+        ],
+      }}
+    >
       <Svg width={size} height={size} viewBox="0 0 20 20" fill="none">
-        <Rect
-          x={1} y={1} width={18} height={18} rx={6}
-          stroke={checked ? color : '#9a9a9a'}
+        <Circle
+          cx={10}
+          cy={10}
+          r={9}
+          stroke={checked ? color : "#9a9a9a"}
           strokeWidth={1.5}
-          fill={checked ? color : 'none'}
+          fill={checked ? color : "none"}
           opacity={checked ? 1 : 0.3}
         />
         {checked && (

@@ -1,8 +1,8 @@
-import { Stack } from 'expo-router';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { ThemeProvider } from '../src/theme';
-import { HabitProvider } from '../src/state';
+import { Stack } from "expo-router";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { ThemeProvider } from "../src/theme";
+import { HabitProvider } from "../src/state";
 
 export default function RootLayout() {
   return (
