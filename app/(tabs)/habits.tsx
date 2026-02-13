@@ -1,220 +1,92 @@
-import { useState, useCallback, useMemo } from 'react';
-import { View, Text, StyleSheet, FlatList, Pressable } from 'react-native';
+import { useMemo } from 'react';
+import { View, Text, ScrollView, StyleSheet, Pressable } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { ChevronRight, Flame, Archive } from 'lucide-react-native';
-import { useRouter } from 'expo-router';
-import { useTheme, SPACING, FONT_SIZE, FONT_WEIGHT, RADIUS, INTERACTIVE } from '../../src/theme';
-import { getHabitColor } from '../../src/theme/palette';
-import { useAppState } from '../../src/state';
-import { Habit } from '../../src/types';
-import { getFrequencyLabel } from '../../src/utils/streaks';
-import { triggerHaptic } from '../../src/utils/haptics';
-import { ScreenHeader, FAB } from '../../src/components';
-import { HabitFormSheet } from '../../src/components/habit-form/HabitFormSheet';
+import { Flame } from 'lucide-react-native';
+import { useTheme, SPACING, FONT_SIZE, FONT_WEIGHT, RADIUS, getHabitColor } from '../../src/theme';
+import { useHabits } from '../../src/state';
 
 export default function HabitsScreen() {
-  const { theme, accent } = useTheme();
-  const { habits, addHabit, updateHabit, getHabitStreak } = useAppState();
-  const router = useRouter();
-  const [showHabitForm, setShowHabitForm] = useState(false);
-  const [showArchived, setShowArchived] = useState(false);
+  const { theme } = useTheme();
+  const { habits } = useHabits();
 
-  const activeHabits = useMemo(() => habits.filter(h => !h.archived), [habits]);
-  const archivedHabits = useMemo(() => habits.filter(h => h.archived), [habits]);
-
-  const handleSaveHabit = useCallback((habit: Habit) => {
-    if (habits.find(h => h.id === habit.id)) {
-      updateHabit(habit.id, habit);
-    } else {
-      addHabit(habit);
-      triggerHaptic('medium');
-    }
-  }, [habits, addHabit, updateHabit]);
-
-  const renderHabitCard = ({ item }: { item: Habit }) => {
-    const habitColor = getHabitColor(item.colorId);
-    const streak = getHabitStreak(item.id);
-    const freqLabel = getFrequencyLabel(item.selectedDays);
-    const initial = item.title.charAt(0).toUpperCase();
-
-    return (
-      <Pressable
-        onPress={() => router.push(`/habit/${item.id}`)}
-        style={({ pressed }) => [
-          styles.habitCard,
-          {
-            backgroundColor: theme.bgSecondary,
-            borderColor: theme.borderSubtle,
-            opacity: pressed ? INTERACTIVE.pressedOpacity : 1,
-          },
-        ]}
-      >
-        {/* Icon circle with initial */}
-        <View style={[styles.iconCircle, { backgroundColor: habitColor.muted }]}>
-          <Text style={[styles.iconInitial, { color: habitColor.primary }]}>{initial}</Text>
-        </View>
-
-        {/* Info */}
-        <View style={styles.cardInfo}>
-          <Text style={[styles.cardTitle, { color: theme.text }]}>{item.title}</Text>
-          <View style={styles.cardMeta}>
-            <Text style={[styles.cardCategory, { color: theme.textTertiary }]}>{item.category}</Text>
-            <Text style={[styles.cardDot, { color: theme.textTertiary }]}> · </Text>
-            <Text style={[styles.cardFreq, { color: theme.textTertiary }]}>{freqLabel}</Text>
-          </View>
-        </View>
-
-        {/* Streak badge */}
-        {streak > 0 && (
-          <View style={[styles.streakBadge, { backgroundColor: accent.primaryFaint }]}>
-            <Flame size={12} color={accent.primary} fill={accent.primary} />
-            <Text style={[styles.streakText, { color: accent.primary }]}>{streak}</Text>
-          </View>
-        )}
-
-        <ChevronRight size={18} color={theme.textTertiary} />
-      </Pressable>
-    );
-  };
+  const sorted = useMemo(
+    () => [...habits].sort((a, b) => b.streak - a.streak),
+    [habits],
+  );
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScreenHeader title="Habits" subtitle={`${activeHabits.length} active habits`} />
+    <SafeAreaView style={styles.safe} edges={['top']}>
+      <View style={styles.header}>
+        <Text style={[styles.title, { color: theme.textPrimary }]}>Habits</Text>
+        <Text style={[styles.subtitle, { color: theme.textMuted }]}>{habits.length} tracked</Text>
+      </View>
 
-      <FlatList
-        data={activeHabits}
-        keyExtractor={(item) => item.id}
-        renderItem={renderHabitCard}
-        ListEmptyComponent={
-          <View style={styles.emptyState}>
-            <Text style={[styles.emptyText, { color: theme.textTertiary }]}>
-              No habits tracked yet. Tap + to create one.
-            </Text>
-          </View>
-        }
-        ListFooterComponent={
-          archivedHabits.length > 0 ? (
-            <View style={styles.archivedSection}>
-              <Pressable
-                onPress={() => setShowArchived(!showArchived)}
-                style={({ pressed }) => [
-                  styles.archivedToggle,
-                  { opacity: pressed ? INTERACTIVE.pressedOpacity : 1 },
-                ]}
-              >
-                <Archive size={14} color={theme.textTertiary} />
-                <Text style={[styles.archivedLabel, { color: theme.textTertiary }]}>
-                  {showArchived ? 'Hide' : 'Show'} archived ({archivedHabits.length})
-                </Text>
-              </Pressable>
-              {showArchived && (
-                <FlatList
-                  data={archivedHabits}
-                  keyExtractor={(item) => item.id}
-                  renderItem={renderHabitCard}
-                  scrollEnabled={false}
-                />
+      <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
+        {sorted.map(habit => {
+          const color = getHabitColor(habit.colorId).primary;
+          return (
+            <Pressable
+              key={habit.id}
+              style={({ pressed }) => [
+                styles.card,
+                {
+                  backgroundColor: theme.glassBackground,
+                  borderColor: theme.glassBorder,
+                  opacity: pressed ? 0.8 : 1,
+                },
+              ]}
+            >
+              <View style={[styles.colorDot, { backgroundColor: color }]} />
+              <View style={styles.cardInfo}>
+                <Text style={[styles.cardName, { color: theme.textPrimary }]}>{habit.name}</Text>
+                <Text style={[styles.cardTime, { color: theme.textMuted }]}>{habit.time}</Text>
+              </View>
+              {habit.streak > 0 && (
+                <View style={[styles.streakBadge, { backgroundColor: theme.accentFaint }]}>
+                  <Flame size={12} color={theme.accent} fill={theme.accent} />
+                  <Text style={[styles.streakText, { color: theme.accent }]}>{habit.streak}</Text>
+                </View>
               )}
-            </View>
-          ) : null
-        }
-        contentContainerStyle={styles.content}
-        showsVerticalScrollIndicator={false}
-      />
-
-      <FAB onPress={() => setShowHabitForm(true)} />
-      <HabitFormSheet
-        visible={showHabitForm}
-        onClose={() => setShowHabitForm(false)}
-        onSave={handleSaveHabit}
-      />
+            </Pressable>
+          );
+        })}
+      </ScrollView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  content: {
+  safe: { flex: 1 },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
+    justifyContent: 'space-between',
     paddingHorizontal: SPACING.xl,
     paddingTop: SPACING.lg,
-    paddingBottom: 100,
+    paddingBottom: SPACING.md,
   },
-  habitCard: {
+  title: { fontSize: FONT_SIZE['6xl'], fontWeight: FONT_WEIGHT.bold, letterSpacing: -0.5 },
+  subtitle: { fontSize: FONT_SIZE.lg },
+  scroll: { paddingHorizontal: SPACING.xl, paddingBottom: 100, gap: SPACING.sm - 2 },
+  card: {
     flexDirection: 'row',
     alignItems: 'center',
     padding: SPACING.lg,
-    borderRadius: RADIUS['3xl'],
+    borderRadius: RADIUS.xl,
     borderWidth: 1,
-    marginBottom: SPACING.sm,
+    gap: SPACING.md,
   },
-  iconCircle: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: SPACING.md,
-  },
-  iconInitial: {
-    fontSize: FONT_SIZE['2xl'],
-    fontWeight: FONT_WEIGHT.bold,
-  },
-  cardInfo: {
-    flex: 1,
-  },
-  cardTitle: {
-    fontSize: FONT_SIZE.xl,
-    fontWeight: FONT_WEIGHT.medium,
-  },
-  cardMeta: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: SPACING.xxs,
-  },
-  cardCategory: {
-    fontSize: FONT_SIZE.md,
-  },
-  cardDot: {
-    fontSize: FONT_SIZE.md,
-  },
-  cardFreq: {
-    fontSize: FONT_SIZE.md,
-  },
+  colorDot: { width: 10, height: 10, borderRadius: 5 },
+  cardInfo: { flex: 1 },
+  cardName: { fontSize: FONT_SIZE.lg, fontWeight: FONT_WEIGHT.medium },
+  cardTime: { fontSize: FONT_SIZE.sm, marginTop: 2 },
   streakBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: SPACING.xxs,
-    paddingVertical: SPACING.xxs + 1,
+    gap: 3,
+    paddingVertical: 3,
     paddingHorizontal: SPACING.sm,
     borderRadius: RADIUS.full,
-    marginRight: SPACING.sm,
   },
-  streakText: {
-    fontSize: FONT_SIZE.sm,
-    fontWeight: FONT_WEIGHT.semibold,
-  },
-  emptyState: {
-    alignItems: 'center',
-    paddingVertical: SPACING.xxxl * 2,
-  },
-  emptyText: {
-    fontSize: FONT_SIZE.lg,
-    textAlign: 'center',
-  },
-  archivedSection: {
-    marginTop: SPACING.xxl,
-  },
-  archivedToggle: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: SPACING.sm,
-    paddingVertical: SPACING.md,
-    marginBottom: SPACING.sm,
-  },
-  archivedLabel: {
-    fontSize: FONT_SIZE.base,
-    fontWeight: FONT_WEIGHT.medium,
-  },
+  streakText: { fontSize: FONT_SIZE.sm, fontWeight: FONT_WEIGHT.semibold },
 });
