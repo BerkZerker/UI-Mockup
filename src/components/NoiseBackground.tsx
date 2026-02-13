@@ -4,7 +4,7 @@ import { useTheme } from "../theme";
 
 const { width: W, height: H } = Dimensions.get("window");
 const TILE = 80;
-const STEP = 6;
+const STEP = 8;
 
 function hash(x: number, y: number): number {
   let h = (x * 374761393 + y * 668265263 + 1274126177) | 0;
