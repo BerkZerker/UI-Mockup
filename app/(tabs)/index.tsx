@@ -9,10 +9,8 @@ import {
 } from "../../src/theme";
 import { useHabits } from "../../src/state";
 import {
-  ProgressRing,
   HabitCard,
   ProgressBar,
-  AggregateWeeklyHeatmap,
 } from "../../src/components";
 
 export default function TodayScreen() {
@@ -23,13 +21,6 @@ export default function TodayScreen() {
     () => habits.filter((h) => h.completed).length,
     [habits],
   );
-
-  const aggregateWeekly = useMemo(() => {
-    return Array.from({ length: 7 }, (_, dayIndex) => {
-      const completed = habits.filter((h) => h.weekly[dayIndex] > 0).length;
-      return habits.length > 0 ? completed / habits.length : 0;
-    });
-  }, [habits]);
 
   const formattedDay = new Date()
     .toLocaleDateString("en-US", { weekday: "long" })
@@ -51,13 +42,11 @@ export default function TodayScreen() {
             {formattedDate}
           </Text>
         </View>
-        <ProgressRing completed={completedCount} total={habits.length} />
       </View>
 
       {/* FIXED: Stats Pane */}
       <View style={styles.statsPane}>
         <ProgressBar completed={completedCount} total={habits.length} />
-        <AggregateWeeklyHeatmap data={aggregateWeekly} />
       </View>
 
       {/* SCROLLABLE: Only habit cards */}
@@ -89,9 +78,6 @@ const styles = StyleSheet.create({
   header: {
     paddingHorizontal: SPACING.xl,
     paddingVertical: SPACING.md,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
   },
   dayLabel: {
     fontSize: FONT_SIZE.base,
@@ -107,7 +93,6 @@ const styles = StyleSheet.create({
   statsPane: {
     paddingHorizontal: SPACING.xl,
     paddingBottom: SPACING.lg,
-    gap: SPACING.lg,
   },
   scroll: {
     paddingHorizontal: SPACING.xl,

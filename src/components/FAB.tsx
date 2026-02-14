@@ -30,7 +30,9 @@ export function FAB({ onPress }: FABProps) {
   };
 
   return (
-    <Animated.View style={[styles.container, { transform: [{ scale: scaleAnim }] }]}>
+    <Animated.View
+      style={[styles.container, { transform: [{ scale: scaleAnim }] }]}
+    >
       <Pressable
         onPress={onPress}
         onPressIn={handlePressIn}
@@ -46,19 +48,19 @@ export function FAB({ onPress }: FABProps) {
 const styles = StyleSheet.create({
   container: {
     position: "absolute",
-    bottom: 100,
+    bottom: 110,
     right: SPACING.xl,
     zIndex: 10,
   },
   button: {
-    width: 56,
-    height: 56,
+    width: 58,
+    height: 58,
     borderRadius: 16,
     alignItems: "center",
     justifyContent: "center",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
+    shadowOpacity: 0.4,
     shadowRadius: 6,
     elevation: 6,
   },

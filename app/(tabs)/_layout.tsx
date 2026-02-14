@@ -1,12 +1,12 @@
 import { Tabs } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { View } from "react-native";
+import { View, Text } from "react-native";
 import {
-  CalendarDays,
-  BarChart3,
-  Sparkles,
-  Menu,
-} from "lucide-react-native";
+  CalendarBlankIcon,
+  ChartBarIcon,
+  SparkleIcon,
+  ListIcon,
+} from "phosphor-react-native";
 import { useTheme, RADIUS } from "../../src/theme";
 import { NoiseBackground } from "../../src/components";
 import { FAB } from "../../src/components/FAB";
@@ -14,17 +14,13 @@ import { FAB } from "../../src/components/FAB";
 function TabIcon({
   focused,
   Icon,
-  ActiveIcon,
   color,
   size,
-  fillActive,
 }: {
   focused: boolean;
   Icon: any;
-  ActiveIcon: any;
   color: string;
   size: number;
-  fillActive?: boolean;
 }) {
   const { theme } = useTheme();
   return (
@@ -38,11 +34,42 @@ function TabIcon({
         justifyContent: "center",
       }}
     >
-      {focused ? (
-        <ActiveIcon size={size} color={color} {...(fillActive ? { fill: color } : {})} />
-      ) : (
-        <Icon size={size} color={color} />
-      )}
+      <Icon size={size} color={color} weight={focused ? "bold" : "regular"} />
+    </View>
+  );
+}
+
+function CalendarDayIcon({
+  size,
+  color,
+  weight,
+}: {
+  size: number;
+  color: string;
+  weight: "bold" | "regular";
+}) {
+  const day = new Date().getDate();
+  return (
+    <View
+      style={{
+        width: size,
+        height: size,
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <CalendarBlankIcon size={size} color={color} weight={weight} />
+      <Text
+        style={{
+          position: "absolute",
+          top: size * 0.33,
+          fontSize: size * 0.38,
+          fontWeight: "700",
+          color,
+        }}
+      >
+        {day}
+      </Text>
     </View>
   );
 }
@@ -67,7 +94,7 @@ export default function TabsLayout() {
             position: "absolute",
             paddingTop: 6,
             paddingBottom: 28,
-            height: 88,
+            height: 96,
             elevation: 0,
           },
           tabBarBackground: () => null,
@@ -79,7 +106,12 @@ export default function TabsLayout() {
           options={{
             title: "Today",
             tabBarIcon: ({ color, size, focused }) => (
-              <TabIcon focused={focused} Icon={CalendarDays} ActiveIcon={CalendarDays} color={color} size={size} fillActive />
+              <TabIcon
+                focused={focused}
+                Icon={CalendarDayIcon}
+                color={color}
+                size={size}
+              />
             ),
           }}
         />
@@ -88,7 +120,12 @@ export default function TabsLayout() {
           options={{
             title: "Stats",
             tabBarIcon: ({ color, size, focused }) => (
-              <TabIcon focused={focused} Icon={BarChart3} ActiveIcon={BarChart3} color={color} size={size} fillActive />
+              <TabIcon
+                focused={focused}
+                Icon={ChartBarIcon}
+                color={color}
+                size={size}
+              />
             ),
           }}
         />
@@ -97,7 +134,12 @@ export default function TabsLayout() {
           options={{
             title: "Insights",
             tabBarIcon: ({ color, size, focused }) => (
-              <TabIcon focused={focused} Icon={Sparkles} ActiveIcon={Sparkles} color={color} size={size} fillActive />
+              <TabIcon
+                focused={focused}
+                Icon={SparkleIcon}
+                color={color}
+                size={size}
+              />
             ),
           }}
         />
@@ -106,7 +148,12 @@ export default function TabsLayout() {
           options={{
             title: "More",
             tabBarIcon: ({ color, size, focused }) => (
-              <TabIcon focused={focused} Icon={Menu} ActiveIcon={Menu} color={color} size={size} fillActive />
+              <TabIcon
+                focused={focused}
+                Icon={ListIcon}
+                color={color}
+                size={size}
+              />
             ),
           }}
         />
