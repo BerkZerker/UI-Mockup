@@ -29,7 +29,7 @@ function TabIcon({
         width: 64,
         height: 32,
         borderRadius: RADIUS.full,
-        backgroundColor: focused ? theme.accentFaint : "transparent",
+        backgroundColor: focused ? theme.accentMuted : "transparent",
         alignItems: "center",
         justifyContent: "center",
       }}
