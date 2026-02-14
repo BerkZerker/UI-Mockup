@@ -6,13 +6,14 @@ import {
   PanGestureHandlerGestureEvent,
   PanGestureHandlerStateChangeEvent,
 } from "react-native-gesture-handler";
-import { Check, X } from "lucide-react-native";
+import { Check, X, Flame, Clock } from "lucide-react-native";
 import { useTheme, SPACING, FONT_SIZE, FONT_WEIGHT, RADIUS } from "../theme";
 import { getHabitColor } from "../theme/palette";
 import { Habit } from "../types";
 import { Checkmark } from "./Checkmark";
 
 const SWIPE_THRESHOLD = 80;
+const DAYS = ["M", "T", "W", "T", "F", "S", "S"];
 
 interface HabitCardProps {
   habit: Habit;
@@ -151,6 +152,10 @@ export function HabitCard({ habit, onToggle, index = 0 }: HabitCardProps) {
     extrapolate: "clamp",
   });
 
+  // Determine streak badge style based on streak length
+  const isHighStreak = habit.streak >= 10;
+  const isEpicStreak = habit.streak >= 30;
+
   return (
     <Animated.View
       style={{
@@ -202,6 +207,17 @@ export function HabitCard({ habit, onToggle, index = 0 }: HabitCardProps) {
               },
             ]}
           >
+            {/* Left color accent strip */}
+            <View
+              style={[
+                styles.accentStrip,
+                {
+                  backgroundColor: hColor,
+                  opacity: habit.completed ? 0.4 : 1,
+                },
+              ]}
+            />
+
             {/* Color tint overlay */}
             <Animated.View
               pointerEvents="none"
@@ -219,6 +235,7 @@ export function HabitCard({ habit, onToggle, index = 0 }: HabitCardProps) {
             </View>
 
             <View style={styles.info}>
+              {/* Top row: name */}
               <Text
                 style={[
                   styles.name,
@@ -229,10 +246,81 @@ export function HabitCard({ habit, onToggle, index = 0 }: HabitCardProps) {
                   },
                   habit.completed && styles.nameCompleted,
                 ]}
+                numberOfLines={1}
               >
                 {habit.name}
               </Text>
+
+              {/* Bottom row: time + weekly dots */}
+              <View style={styles.metaRow}>
+                <View style={styles.timeRow}>
+                  <Clock
+                    size={11}
+                    color={theme.textMuted}
+                    strokeWidth={2}
+                  />
+                  <Text style={[styles.timeText, { color: theme.textMuted }]}>
+                    {habit.time}
+                  </Text>
+                </View>
+
+                <View style={styles.weeklyDots}>
+                  {habit.weekly.map((done, i) => (
+                    <View key={i} style={styles.dotWrapper}>
+                      <Text style={[styles.dotLabel, { color: theme.textMuted }]}>
+                        {DAYS[i]}
+                      </Text>
+                      <View
+                        style={[
+                          styles.dot,
+                          {
+                            backgroundColor: done ? hColor : theme.borderSubtle,
+                            opacity: done ? 1 : 0.5,
+                          },
+                        ]}
+                      />
+                    </View>
+                  ))}
+                </View>
+              </View>
             </View>
+
+            {/* Streak badge */}
+            {habit.streak > 0 && (
+              <View
+                style={[
+                  styles.streakBadge,
+                  {
+                    backgroundColor: isEpicStreak
+                      ? `${hColor}30`
+                      : isHighStreak
+                        ? `${hColor}20`
+                        : theme.surface2,
+                  },
+                  isEpicStreak && {
+                    borderWidth: 1,
+                    borderColor: `${hColor}50`,
+                  },
+                ]}
+              >
+                <Flame
+                  size={isHighStreak ? 14 : 12}
+                  color={isEpicStreak ? hColor : isHighStreak ? hColor : theme.textMuted}
+                  strokeWidth={2.5}
+                />
+                <Text
+                  style={[
+                    styles.streakText,
+                    {
+                      color: isHighStreak ? hColor : theme.textSecondary,
+                      fontWeight: isHighStreak ? FONT_WEIGHT.bold : FONT_WEIGHT.medium,
+                    },
+                  ]}
+                >
+                  {habit.streak}
+                </Text>
+              </View>
+            )}
 
             {isAnimating && (
               <Animated.View
@@ -260,18 +348,77 @@ const styles = StyleSheet.create({
   card: {
     borderRadius: RADIUS.xl,
     borderWidth: 1,
-    padding: 20,
+    paddingVertical: 16,
+    paddingLeft: 18,
+    paddingRight: 14,
     flexDirection: "row",
     alignItems: "center",
-    gap: 14,
-    marginBottom: SPACING.sm - 2,
+    gap: 12,
+    marginBottom: SPACING.md,
     overflow: "hidden",
+  },
+  accentStrip: {
+    position: "absolute",
+    left: 0,
+    top: 0,
+    bottom: 0,
+    width: 4,
+    borderTopLeftRadius: RADIUS.xl,
+    borderBottomLeftRadius: RADIUS.xl,
   },
   checkbox: { flexShrink: 0 },
   info: { flex: 1, minWidth: 0 },
-  name: { fontSize: FONT_SIZE["2xl"], fontWeight: FONT_WEIGHT.medium },
+  name: {
+    fontSize: FONT_SIZE["2xl"],
+    fontWeight: FONT_WEIGHT.medium,
+    marginBottom: 6,
+  },
   nameCompleted: { textDecorationLine: "line-through" },
-  time: { fontSize: FONT_SIZE.base, marginTop: 3 },
+  metaRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: SPACING.sm,
+  },
+  timeRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+  },
+  timeText: {
+    fontSize: FONT_SIZE.sm,
+    fontWeight: FONT_WEIGHT.regular,
+  },
+  weeklyDots: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
+  },
+  dotWrapper: {
+    alignItems: "center",
+    gap: 2,
+  },
+  dotLabel: {
+    fontSize: 8,
+    fontWeight: FONT_WEIGHT.medium,
+  },
+  dot: {
+    width: 7,
+    height: 7,
+    borderRadius: 4,
+  },
+  streakBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 3,
+    paddingHorizontal: 8,
+    paddingVertical: 5,
+    borderRadius: RADIUS.full,
+    flexShrink: 0,
+  },
+  streakText: {
+    fontSize: FONT_SIZE.md,
+  },
   indicatorContainer: {
     ...StyleSheet.absoluteFillObject,
     flexDirection: "row",
