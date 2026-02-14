@@ -1,4 +1,4 @@
-import { View, Text, Switch, ScrollView, StyleSheet } from "react-native";
+import { View, Text, Switch, TextInput, ScrollView, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
   useTheme,
@@ -7,11 +7,12 @@ import {
   FONT_WEIGHT,
   RADIUS,
 } from "../../src/theme";
-import { useHabits } from "../../src/state";
+import { useHabits, useUser } from "../../src/state";
 
 export default function SettingsScreen() {
   const { theme, mode, toggleMode } = useTheme();
   const { habits } = useHabits();
+  const { userName, setUserName } = useUser();
 
   const activeCount = habits.length;
   const completedCount = habits.filter((h) => h.completed).length;
@@ -74,8 +75,30 @@ export default function SettingsScreen() {
           </View>
         </View>
 
-        {/* Appearance */}
+        {/* Profile */}
         <Text style={[styles.sectionTitle, { color: theme.textMuted }]}>
+          PROFILE
+        </Text>
+        <View style={[styles.row, { borderBottomColor: theme.borderSubtle }]}>
+          <Text style={[styles.rowLabel, { color: theme.textPrimary }]}>
+            Name
+          </Text>
+          <TextInput
+            value={userName}
+            onChangeText={setUserName}
+            style={[styles.nameInput, { color: theme.textPrimary, borderColor: theme.borderSubtle }]}
+            placeholder="Your name"
+            placeholderTextColor={theme.textMuted}
+          />
+        </View>
+
+        {/* Appearance */}
+        <Text
+          style={[
+            styles.sectionTitle,
+            { color: theme.textMuted, marginTop: SPACING.xxxl },
+          ]}
+        >
           APPEARANCE
         </Text>
         <View style={[styles.row, { borderBottomColor: theme.borderSubtle }]}>
@@ -151,4 +174,13 @@ const styles = StyleSheet.create({
   },
   rowLabel: { fontSize: FONT_SIZE.xl },
   rowValue: { fontSize: FONT_SIZE.xl },
+  nameInput: {
+    fontSize: FONT_SIZE.xl,
+    textAlign: "right",
+    minWidth: 120,
+    paddingVertical: SPACING.xs,
+    paddingHorizontal: SPACING.sm,
+    borderWidth: 1,
+    borderRadius: RADIUS.sm,
+  },
 });

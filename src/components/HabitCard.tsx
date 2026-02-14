@@ -13,7 +13,6 @@ import { Habit } from "../types";
 import { Checkmark } from "./Checkmark";
 
 const SWIPE_THRESHOLD = 80;
-const DAYS = ["M", "T", "W", "T", "F", "S", "S"];
 
 interface HabitCardProps {
   habit: Habit;
@@ -68,6 +67,21 @@ export function HabitCard({ habit, onToggle, index = 0 }: HabitCardProps) {
     }).start();
   };
 
+  const animateOut = (callback: () => void) => {
+    Animated.parallel([
+      Animated.timing(opacityAnim, {
+        toValue: 0,
+        duration: 250,
+        useNativeDriver: true,
+      }),
+      Animated.timing(slideAnim, {
+        toValue: 0,
+        duration: 250,
+        useNativeDriver: true,
+      }),
+    ]).start(() => callback());
+  };
+
   const handleToggle = () => {
     if (!habit.completed) {
       setIsAnimating(true);
@@ -91,9 +105,13 @@ export function HabitCard({ habit, onToggle, index = 0 }: HabitCardProps) {
             useNativeDriver: true,
           }),
         ]),
-      ]).start(() => setIsAnimating(false));
+      ]).start(() => {
+        setIsAnimating(false);
+        animateOut(() => onToggle(habit.id));
+      });
+    } else {
+      animateOut(() => onToggle(habit.id));
     }
-    onToggle(habit.id);
   };
 
   const onGestureEvent = Animated.event(
@@ -105,14 +123,9 @@ export function HabitCard({ habit, onToggle, index = 0 }: HabitCardProps) {
     if (e.nativeEvent.oldState === State.ACTIVE) {
       const { translationX: tx } = e.nativeEvent;
 
-      // Swipe left past threshold & not completed → mark done
-      if (tx < -SWIPE_THRESHOLD && !habit.completed) {
-        onToggle(habit.id);
-      }
-      // Swipe right past threshold & completed → mark undone
-      else if (tx > SWIPE_THRESHOLD && habit.completed) {
-        onToggle(habit.id);
-      }
+      const shouldToggle =
+        (tx < -SWIPE_THRESHOLD && !habit.completed) ||
+        (tx > SWIPE_THRESHOLD && habit.completed);
 
       // Spring back to center
       Animated.spring(translateX, {
@@ -120,7 +133,11 @@ export function HabitCard({ habit, onToggle, index = 0 }: HabitCardProps) {
         tension: 200,
         friction: 20,
         useNativeDriver: true,
-      }).start();
+      }).start(() => {
+        if (shouldToggle) {
+          animateOut(() => onToggle(habit.id));
+        }
+      });
     }
   };
 
@@ -251,37 +268,16 @@ export function HabitCard({ habit, onToggle, index = 0 }: HabitCardProps) {
                 {habit.name}
               </Text>
 
-              {/* Bottom row: time + weekly dots */}
-              <View style={styles.metaRow}>
-                <View style={styles.timeRow}>
-                  <Clock
-                    size={11}
-                    color={theme.textMuted}
-                    strokeWidth={2}
-                  />
-                  <Text style={[styles.timeText, { color: theme.textMuted }]}>
-                    {habit.time}
-                  </Text>
-                </View>
-
-                <View style={styles.weeklyDots}>
-                  {habit.weekly.map((done, i) => (
-                    <View key={i} style={styles.dotWrapper}>
-                      <Text style={[styles.dotLabel, { color: theme.textMuted }]}>
-                        {DAYS[i]}
-                      </Text>
-                      <View
-                        style={[
-                          styles.dot,
-                          {
-                            backgroundColor: done ? hColor : theme.borderSubtle,
-                            opacity: done ? 1 : 0.5,
-                          },
-                        ]}
-                      />
-                    </View>
-                  ))}
-                </View>
+              {/* Bottom row: time */}
+              <View style={styles.timeRow}>
+                <Clock
+                  size={13}
+                  color={theme.textMuted}
+                  strokeWidth={2}
+                />
+                <Text style={[styles.timeText, { color: theme.textMuted }]}>
+                  {habit.time}
+                </Text>
               </View>
             </View>
 
@@ -348,12 +344,12 @@ const styles = StyleSheet.create({
   card: {
     borderRadius: RADIUS.xl,
     borderWidth: 1,
-    paddingVertical: 16,
+    paddingVertical: 18,
     paddingLeft: 18,
     paddingRight: 14,
     flexDirection: "row",
     alignItems: "center",
-    gap: 12,
+    gap: 14,
     marginBottom: SPACING.md,
     overflow: "hidden",
   },
@@ -369,43 +365,19 @@ const styles = StyleSheet.create({
   checkbox: { flexShrink: 0 },
   info: { flex: 1, minWidth: 0 },
   name: {
-    fontSize: FONT_SIZE["2xl"],
-    fontWeight: FONT_WEIGHT.medium,
+    fontSize: FONT_SIZE["4xl"],
+    fontWeight: FONT_WEIGHT.semibold,
     marginBottom: 6,
   },
   nameCompleted: { textDecorationLine: "line-through" },
-  metaRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    gap: SPACING.sm,
-  },
   timeRow: {
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
   },
   timeText: {
-    fontSize: FONT_SIZE.sm,
+    fontSize: FONT_SIZE.base,
     fontWeight: FONT_WEIGHT.regular,
-  },
-  weeklyDots: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 5,
-  },
-  dotWrapper: {
-    alignItems: "center",
-    gap: 2,
-  },
-  dotLabel: {
-    fontSize: 8,
-    fontWeight: FONT_WEIGHT.medium,
-  },
-  dot: {
-    width: 7,
-    height: 7,
-    borderRadius: 4,
   },
   streakBadge: {
     flexDirection: "row",
